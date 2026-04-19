@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seed": "tsx scripts/seed-firestore.ts",
+    "genkit": "genkit start -- tsx --watch src/ai/flows/analyze.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
