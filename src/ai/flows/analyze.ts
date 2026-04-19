@@ -4,7 +4,7 @@ import { transcribeStep } from '@/ai/steps/transcribe';
 import { contentAnalyzerStep } from '@/ai/steps/content-analyzer';
 import { challengeStep } from '@/ai/steps/challenge';
 import { safetyPlanStep } from '@/ai/steps/safety-plan';
-import { phoneLookupTool } from '@/ai/tools/phone-lookup';
+import { lookupPhoneReputation } from '@/ai/tools/phone-lookup';
 
 export type StageEvent =
   | { stage: 'transcribing'; data: null }
@@ -12,7 +12,7 @@ export type StageEvent =
   | { stage: 'content_analyzing'; data: null }
   | { stage: 'content_analyzed'; data: Awaited<ReturnType<typeof contentAnalyzerStep>> }
   | { stage: 'phone_looking_up'; data: null }
-  | { stage: 'phone_looked_up'; data: Awaited<ReturnType<typeof phoneLookupTool>> }
+  | { stage: 'phone_looked_up'; data: Awaited<ReturnType<typeof lookupPhoneReputation>> }
   | { stage: 'challenge_generating'; data: null }
   | { stage: 'challenge_generated'; data: Awaited<ReturnType<typeof challengeStep>> }
   | { stage: 'safety_planning'; data: null }
@@ -43,7 +43,7 @@ export async function* analyzeVoiceNote(
         claimed_role: input.claimed_role,
         caller_phone: input.caller_phone,
       }),
-      phoneLookupTool({ phone: input.caller_phone ?? '' }),
+      lookupPhoneReputation(input.caller_phone ?? ''),
     ]);
 
     yield { stage: 'content_analyzed', data: content };
