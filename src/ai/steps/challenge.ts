@@ -1,4 +1,4 @@
-import { ai, MODEL_FLASH } from '@/ai/genkit';
+import { ai, withRetry } from '@/ai/genkit';
 import { ChallengeOutput, ContentAnalyzerOutput, TranscribeOutput } from '@/ai/schemas';
 import { z } from 'zod';
 
@@ -47,11 +47,13 @@ impersonation_cues_missing: ${JSON.stringify(content.impersonation_signals.credi
 Generate the 2 challenge questions now.
 `;
 
-    const { output } = await ai.generate({
-      model: MODEL_FLASH,
-      prompt: [{ text: SYSTEM_PROMPT }, { text: userPrompt }],
-      output: { schema: ChallengeOutput },
-    });
+    const { output } = await withRetry((model) =>
+      ai.generate({
+        model,
+        prompt: [{ text: SYSTEM_PROMPT }, { text: userPrompt }],
+        output: { schema: ChallengeOutput },
+      })
+    );
 
     if (!output) throw new Error('Challenge step returned empty output');
     return output;

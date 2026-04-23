@@ -1,4 +1,4 @@
-import { ai, MODEL_FLASH } from '@/ai/genkit';
+import { ai, withRetry } from '@/ai/genkit';
 import { db } from '@/lib/firebase-admin';
 import { ContentAnalyzerOutput, TranscribeOutput } from '@/ai/schemas';
 import { z } from 'zod';
@@ -92,11 +92,13 @@ export const contentAnalyzerStep = ai.defineFlow(
       caller_phone ?? ''
     );
 
-    const { output } = await ai.generate({
-      model: MODEL_FLASH,
-      prompt,
-      output: { schema: ContentAnalyzerOutput },
-    });
+    const { output } = await withRetry((model) =>
+      ai.generate({
+        model,
+        prompt,
+        output: { schema: ContentAnalyzerOutput },
+      })
+    );
 
     if (!output) throw new Error('ContentAnalyzer returned empty output');
     return output;

@@ -1,4 +1,4 @@
-import { ai, MODEL_FLASH, MODEL_PRO } from '@/ai/genkit';
+import { ai, MODEL_FLASH, MODEL_PRO, withRetry } from '@/ai/genkit';
 import {
   SafetyPlanOutput,
   TranscribeOutput,
@@ -81,7 +81,7 @@ export const safetyPlanStep = ai.defineFlow(
   async ({ transcribe, content, phone, challenge, caller_phone, claimed_role }) => {
     const conflict = detectConflict(transcribe, content, phone);
     const shouldEscalate = conflict && process.env.ESCALATE_TO_PRO === 'true';
-    const model = shouldEscalate ? MODEL_PRO : MODEL_FLASH;
+    const primary = shouldEscalate ? MODEL_PRO : MODEL_FLASH;
 
     const userPrompt = `
 INPUTS FROM PRIOR AGENTS (JSON):
@@ -101,11 +101,15 @@ conflict_detected = ${conflict}
 Apply the scoring rubric, produce the final verdict JSON.
 `;
 
-    const { output } = await ai.generate({
-      model,
-      prompt: [{ text: SYSTEM_PROMPT }, { text: userPrompt }],
-      output: { schema: SafetyPlanOutput },
-    });
+    const { output } = await withRetry(
+      (model) =>
+        ai.generate({
+          model,
+          prompt: [{ text: SYSTEM_PROMPT }, { text: userPrompt }],
+          output: { schema: SafetyPlanOutput },
+        }),
+      { primary }
+    );
 
     if (!output) throw new Error('SafetyPlan returned empty output');
     return output;

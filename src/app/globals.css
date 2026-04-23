@@ -1,130 +1,300 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* ───────────────────────────────────────────────
+   DengarDulu — Mastercard-inspired Design System
+   Typography: Sofia Sans
+   Canvas: warm cream (#F3F0EE), pill/stadium shapes
+   ─────────────────────────────────────────────── */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+@theme {
+  /* Fonts */
+  --font-sans: var(--font-sofia), Sofia Sans, Arial, sans-serif;
+  --font-heading: var(--font-sofia), Sofia Sans, Arial, sans-serif;
+  --font-mono: var(--font-inter), Inter, ui-monospace, monospace;
+
+  /* Mastercard palette */
+  --color-canvas: #F3F0EE;
+  --color-lifted: #FCFBFA;
+  --color-ink: #141413;
+  --color-charcoal: #262627;
+  --color-slate: #696969;
+  --color-granite: #555555;
+  --color-taupe: #D1CDC7;
+  --color-bone: #F4F4F4;
+  --color-signal: #CF4500;
+  --color-signal-light: #F37338;
+  --color-clay: #9A3A0A;
+  --color-linkblue: #3860BE;
+  --color-mc-red: #EB001B;
+  --color-mc-yellow: #F79E1B;
+
+  /* Semantic aliases — used by shadcn-style components */
+  --color-background: #F3F0EE;
+  --color-foreground: #141413;
+  --color-card: #FCFBFA;
+  --color-card-foreground: #141413;
+  --color-primary: #141413;
+  --color-primary-foreground: #F3F0EE;
+  --color-secondary: #FFFFFF;
+  --color-secondary-foreground: #141413;
+  --color-muted: #D1CDC7;
+  --color-muted-foreground: #696969;
+  --color-accent: #F37338;
+  --color-accent-foreground: #FFFFFF;
+  --color-destructive: #EB001B;
+  --color-destructive-foreground: #FFFFFF;
+  --color-border: rgba(20, 20, 19, 0.12);
+  --color-input: rgba(20, 20, 19, 0.5);
+  --color-ring: #141413;
+  --color-success: #0A7A3D;
+  --color-warning: #CF4500;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 40px;
+  --radius-xl: 999px;
+  --radius-pill: 999px;
+  --radius-stadium: 40px;
+  --radius-button: 20px;
+
+  /* Shadows (atmospheric, never hard drop) */
+  --shadow-pill: 0 4px 24px 0 rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 24px 48px 0 rgba(0, 0, 0, 0.08);
+  --shadow-feature: 0 70px 110px 0 rgba(0, 0, 0, 0.25);
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
+/* ───────────────────────────────────────────────
+   Base layer
+   ─────────────────────────────────────────────── */
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  html {
+    background: var(--color-canvas);
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 450;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  html {
-    @apply font-sans;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  h1 {
+    font-size: clamp(40px, 7vw, 64px);
+    line-height: 1;
+  }
+  h2 {
+    font-size: clamp(28px, 4vw, 36px);
+    line-height: 1.22;
+  }
+  h3 {
+    font-size: 24px;
+    line-height: 1.2;
+  }
+  * {
+    border-color: var(--color-border);
+  }
+  *:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-canvas);
   }
 }
+
+/* ───────────────────────────────────────────────
+   Utility classes — Mastercard component primitives
+   ─────────────────────────────────────────────── */
+
+.ink-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-button);
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.ink-pill:hover { opacity: 0.9; }
+.ink-pill:active { transform: scale(0.98); }
+.ink-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.outline-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFFFFF;
+  color: var(--color-ink);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-button);
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 450;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.outline-pill:hover { background: var(--color-bone); }
+.outline-pill:active { transform: scale(0.98); }
+
+.ghost-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chip-selected {
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  border-color: var(--color-ink);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-signal);
+}
+
+.stadium-card {
+  background: var(--color-lifted);
+  border-radius: var(--radius-stadium);
+  padding: 32px;
+  border: 1px solid var(--color-border);
+}
+
+.pill-card {
+  background: var(--color-lifted);
+  border-radius: var(--radius-pill);
+  padding: 20px 32px;
+  border: 1px solid var(--color-border);
+}
+
+.floating-nav {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-pill);
+  padding: 14px 28px;
+  box-shadow: var(--shadow-pill);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  width: calc(100% - 48px);
+  max-width: 1100px;
+}
+
+/* Decorative orbital arc */
+.orbital {
+  position: absolute;
+  pointer-events: none;
+  stroke: var(--color-signal-light);
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.6;
+}
+
+/* Ghost watermark text (cream on cream) */
+.ghost-watermark {
+  color: #E8E2DA;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Satellite circular CTA (docks on circle portraits) */
+.satellite {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 56px;
+  height: 56px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-pill);
+  transform: translate(30%, 30%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.satellite:hover { transform: translate(30%, 30%) scale(1.05); }
+
+/* Status dot for agent stepper */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Verdict badge variants */
+.badge-low {
+  background: #E6F4EC;
+  color: #0A7A3D;
+  border: 1px solid #0A7A3D33;
+}
+.badge-medium {
+  background: #FFF1E6;
+  color: var(--color-signal);
+  border: 1px solid #CF450033;
+}
+.badge-high {
+  background: #FCE7E9;
+  color: var(--color-mc-red);
+  border: 1px solid #EB001B33;
+}
+
+/* Spinner animation (fallback if tw-animate-css missing) */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin 1.2s linear infinite; }

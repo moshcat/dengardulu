@@ -1,8 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { messages, Lang } from '@/i18n/messages';
-import { Progress } from '@/components/ui/progress';
 import { ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
 
 type Verdict = 'LOW' | 'MEDIUM' | 'HIGH';
@@ -21,47 +19,53 @@ export function VerdictBadge({
   const t = messages[lang];
   const label =
     verdict === 'HIGH' ? t.verdict_high : verdict === 'MEDIUM' ? t.verdict_medium : t.verdict_low;
-  const Icon = verdict === 'HIGH' ? ShieldAlert : verdict === 'MEDIUM' ? ShieldQuestion : ShieldCheck;
+  const Icon =
+    verdict === 'HIGH' ? ShieldAlert : verdict === 'MEDIUM' ? ShieldQuestion : ShieldCheck;
+
+  const toneClass =
+    verdict === 'HIGH'
+      ? 'bg-[#FCE7E9] border-[#EB001B]/30 text-[#EB001B]'
+      : verdict === 'MEDIUM'
+      ? 'bg-[#FFF1E6] border-[var(--color-signal)]/30 text-[var(--color-signal)]'
+      : 'bg-[#E6F4EC] border-[#0A7A3D]/30 text-[#0A7A3D]';
+
+  const barColor =
+    verdict === 'HIGH'
+      ? 'bg-[#EB001B]'
+      : verdict === 'MEDIUM'
+      ? 'bg-[var(--color-signal)]'
+      : 'bg-[#0A7A3D]';
 
   return (
-    <div
-      className={cn(
-        'rounded-2xl border p-6 flex flex-col gap-4',
-        verdict === 'HIGH' &&
-          'bg-destructive/10 border-destructive/40 text-destructive-foreground',
-        verdict === 'MEDIUM' && 'bg-amber-500/10 border-amber-500/40',
-        verdict === 'LOW' && 'bg-green-500/10 border-green-500/40'
-      )}
-    >
-      <div className="flex items-center gap-3">
-        <Icon
-          className={cn(
-            'size-10',
-            verdict === 'HIGH' && 'text-destructive',
-            verdict === 'MEDIUM' && 'text-amber-600',
-            verdict === 'LOW' && 'text-green-600'
-          )}
-        />
-        <div>
-          <div
-            className={cn(
-              'text-2xl font-bold tracking-tight',
-              verdict === 'HIGH' && 'text-destructive',
-              verdict === 'MEDIUM' && 'text-amber-700 dark:text-amber-500',
-              verdict === 'LOW' && 'text-green-700 dark:text-green-500'
-            )}
-          >
+    <div className={`rounded-[40px] border p-8 md:p-10 ${toneClass}`}>
+      <div className="flex items-start gap-5">
+        <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center shrink-0">
+          <Icon size={32} strokeWidth={1.8} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="eyebrow mb-2 opacity-80">
+            <span>{t.suspicion_score}</span>
+          </div>
+          <div className="text-[32px] md:text-[40px] font-medium leading-[1.05] tracking-[-0.02em] mb-2">
             {label}
           </div>
-          <div className="text-sm text-muted-foreground">{headline}</div>
+          <p className="text-[15px] opacity-85 leading-[1.5] max-w-xl">{headline}</p>
+        </div>
+        <div className="text-right shrink-0">
+          <div className="text-[48px] md:text-[64px] font-medium leading-none tracking-[-0.02em]">
+            {score}
+          </div>
+          <div className="text-[11px] font-bold tracking-[0.04em] uppercase opacity-70 mt-1">
+            / 100
+          </div>
         </div>
       </div>
-      <div>
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-muted-foreground">{t.suspicion_score}</span>
-          <span className="font-mono font-medium">{score} / 100</span>
-        </div>
-        <Progress value={score} className="h-2" />
+
+      <div className="mt-6 h-1.5 bg-black/10 rounded-full overflow-hidden">
+        <div
+          className={`h-full transition-all duration-700 ${barColor}`}
+          style={{ width: `${Math.max(0, Math.min(100, score))}%` }}
+        />
       </div>
     </div>
   );

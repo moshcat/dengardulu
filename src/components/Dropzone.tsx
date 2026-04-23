@@ -1,14 +1,12 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
-import { Upload, FileAudio, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { cn } from '@/lib/utils';
+import { Upload, FileAudio, X, AlertCircle } from 'lucide-react';
 import { messages, Lang } from '@/i18n/messages';
 
 const MAX_BYTES = 20 * 1024 * 1024;
-const ACCEPT = 'audio/m4a,audio/mp4,audio/mpeg,audio/mp3,audio/ogg,audio/wav,audio/x-wav,audio/aac,audio/webm,audio/flac';
+const ACCEPT =
+  'audio/m4a,audio/mp4,audio/mpeg,audio/mp3,audio/ogg,audio/wav,audio/x-wav,audio/aac,audio/webm,audio/flac';
 
 export type DropzoneProps = {
   onFile: (file: File | null) => void;
@@ -64,13 +62,15 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
           if (f) accept(f);
         }}
         onClick={() => inputRef.current?.click()}
-        className={cn(
-          'relative border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors',
+        className={[
+          'relative rounded-[40px] p-12 text-center cursor-pointer transition-all',
+          'bg-[var(--color-lifted)] border-2 border-dashed',
           dragActive
-            ? 'border-primary bg-primary/5'
-            : 'border-border hover:border-primary/50 hover:bg-muted/30',
-          file && 'border-primary/60 bg-primary/5'
-        )}
+            ? 'border-[var(--color-ink)] bg-[var(--color-canvas)]'
+            : file
+            ? 'border-[var(--color-signal-light)] bg-[var(--color-signal-light)]/5'
+            : 'border-[var(--color-taupe)] hover:border-[var(--color-ink)]',
+        ].join(' ')}
         role="button"
         tabIndex={0}
       >
@@ -85,41 +85,52 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
           }}
         />
         {file ? (
-          <div className="flex items-center justify-center gap-3">
-            <FileAudio className="size-8 text-primary" />
-            <div className="text-left">
-              <div className="font-medium truncate max-w-xs">{file.name}</div>
-              <div className="text-xs text-muted-foreground">
-                {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type || 'audio'}
+          <div className="flex items-center justify-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-[var(--color-ink)] text-[var(--color-canvas)] flex items-center justify-center shrink-0">
+              <FileAudio size={22} />
+            </div>
+            <div className="text-left min-w-0">
+              <div className="font-medium text-[16px] truncate max-w-[260px]">
+                {file.name}
+              </div>
+              <div className="text-[13px] text-[var(--color-slate)] mt-0.5">
+                {(file.size / 1024 / 1024).toFixed(2)} MB · {file.type || 'audio'}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 clear();
               }}
+              className="w-9 h-9 rounded-full border border-[var(--color-ink)]/20 flex items-center justify-center hover:bg-[var(--color-ink)] hover:text-[var(--color-canvas)] transition-colors"
+              aria-label="Remove file"
             >
-              <X className="size-4" />
-            </Button>
+              <X size={14} />
+            </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-3">
-            <Upload className="size-10 text-muted-foreground" />
-            <div className="text-lg font-medium">{t.dropzone_drop}</div>
-            <div className="text-sm text-muted-foreground">{t.dropzone_or}</div>
-            <Button type="button" variant="outline">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-[var(--color-canvas)] border border-[var(--color-border)] flex items-center justify-center">
+              <Upload size={24} className="text-[var(--color-slate)]" />
+            </div>
+            <div>
+              <div className="text-[20px] font-medium mb-1">{t.dropzone_drop}</div>
+              <div className="text-[13px] text-[var(--color-slate)]">{t.dropzone_or}</div>
+            </div>
+            <button type="button" className="outline-pill">
               {t.dropzone_browse}
-            </Button>
-            <div className="text-xs text-muted-foreground">{t.dropzone_formats}</div>
+            </button>
+            <div className="text-[12px] text-[var(--color-slate)] mt-1">
+              {t.dropzone_formats}
+            </div>
           </div>
         )}
       </div>
       {error && (
-        <Alert variant="destructive" className="mt-3">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="mt-4 flex items-start gap-3 px-5 py-4 rounded-[20px] bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/20">
+          <AlertCircle size={18} className="text-[var(--color-mc-red)] shrink-0 mt-0.5" />
+          <p className="text-[14px] text-[var(--color-mc-red)]">{error}</p>
+        </div>
       )}
     </div>
   );

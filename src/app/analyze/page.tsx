@@ -2,9 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShieldCheck, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Sparkles } from 'lucide-react';
+import { LogoWordmark } from '@/components/Logo';
 import { Dropzone } from '@/components/Dropzone';
 import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
@@ -16,32 +15,32 @@ type Phase = 'idle' | 'analyzing' | 'done' | 'error';
 const INITIAL_STAGES = (): StepperStage[] => [
   {
     id: 'transcribe',
-    label_bm: 'Menyalin dan menganalisis suara…',
-    label_en: 'Transcribing & characterizing voice…',
+    label_bm: 'Menyalin dan menganalisis suara',
+    label_en: 'Transcribing & characterizing voice',
     status: 'pending',
   },
   {
     id: 'content',
-    label_bm: 'Memeriksa corak penipuan Malaysia…',
-    label_en: 'Checking Malaysian scam patterns…',
+    label_bm: 'Memeriksa corak penipuan Malaysia',
+    label_en: 'Checking Malaysian scam patterns',
     status: 'pending',
   },
   {
     id: 'phone',
-    label_bm: 'Memeriksa pangkalan data nombor scam…',
-    label_en: 'Checking scam phone database…',
+    label_bm: 'Memeriksa pangkalan data nombor scam',
+    label_en: 'Checking scam phone database',
     status: 'pending',
   },
   {
     id: 'challenge',
-    label_bm: 'Menjana soalan pengesahan peribadi…',
-    label_en: 'Generating verification questions…',
+    label_bm: 'Menjana soalan pengesahan peribadi',
+    label_en: 'Generating verification questions',
     status: 'pending',
   },
   {
     id: 'safety',
-    label_bm: 'Menyusun rancangan keselamatan…',
-    label_en: 'Assembling safety plan…',
+    label_bm: 'Menyusun rancangan keselamatan',
+    label_en: 'Assembling safety plan',
     status: 'pending',
   },
 ];
@@ -49,7 +48,7 @@ const INITIAL_STAGES = (): StepperStage[] => [
 const ROLES = ['boss', 'family', 'friend', 'bank', 'police', 'service', 'unknown'] as const;
 
 export default function AnalyzePage() {
-  const [lang, setLang] = useState<Lang>('bm');
+  const [lang, setLang] = useState<Lang>('en');
   const t = messages[lang];
   const [phase, setPhase] = useState<Phase>('idle');
   const [file, setFile] = useState<File | null>(null);
@@ -59,12 +58,9 @@ export default function AnalyzePage() {
   const [result, setResult] = useState<FullAnalysis | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const updateStage = useCallback(
-    (id: string, patch: Partial<StepperStage>) => {
-      setStages((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
-    },
-    []
-  );
+  const updateStage = useCallback((id: string, patch: Partial<StepperStage>) => {
+    setStages((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+  }, []);
 
   const startAnalysis = async () => {
     if (!file) return;
@@ -156,7 +152,9 @@ export default function AnalyzePage() {
         setStages((prev) =>
           prev.map((s) => (s.status === 'active' ? { ...s, status: 'error' } : s))
         );
-        setErrorMsg(((event.data as { message: string }) ?? { message: 'unknown' }).message);
+        setErrorMsg(
+          ((event.data as { message: string }) ?? { message: 'unknown' }).message
+        );
         setPhase('error');
         break;
     }
@@ -173,115 +171,159 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      <header className="border-b">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 font-bold">
-            <ShieldCheck className="size-5 text-primary" />
-            DengarDulu
-          </Link>
-          <div className="flex gap-1 text-sm">
-            <button
-              onClick={() => setLang('bm')}
-              className={`px-2 py-1 rounded ${lang === 'bm' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
-            >
-              BM
-            </button>
-            <button
-              onClick={() => setLang('en')}
-              className={`px-2 py-1 rounded ${lang === 'en' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
-            >
-              EN
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-3xl w-full mx-auto px-4 py-6 md:py-10 flex-1 space-y-6">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" /> Home
+    <main className="min-h-screen flex flex-col">
+      {/* Floating nav */}
+      <nav className="floating-nav">
+        <Link href="/" className="hover:opacity-80 transition-opacity">
+          <LogoWordmark size={28} />
         </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLang('en')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+              lang === 'en'
+                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
+                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
+            }`}
+          >
+            EN
+          </button>
+          <button
+            onClick={() => setLang('bm')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+              lang === 'bm'
+                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
+                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
+            }`}
+          >
+            BM
+          </button>
+        </div>
+      </nav>
 
-        {phase === 'idle' && (
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight">{t.analyze_title}</h1>
-            <Dropzone onFile={setFile} lang={lang} />
+      <div className="flex-1 pt-32 pb-16 px-6">
+        <div className="max-w-[880px] w-full mx-auto space-y-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[14px] text-[var(--color-slate)] hover:text-[var(--color-ink)] transition-colors"
+          >
+            <ArrowLeft size={16} /> {lang === 'bm' ? 'Kembali' : 'Back'}
+          </Link>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="phone">
-                {t.phone_label}
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                placeholder={t.phone_placeholder}
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t.role_label}</label>
-              <div className="flex flex-wrap gap-2">
-                {ROLES.map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setRole(r)}
-                    className={`text-sm px-3 py-1 rounded-full border transition-colors ${
-                      role === r
-                        ? 'bg-primary text-primary-foreground border-primary'
-                        : 'bg-background hover:bg-muted'
-                    }`}
-                  >
-                    {t[`role_${r}` as keyof typeof t]}
-                  </button>
-                ))}
+          {/* ───────── IDLE ───────── */}
+          {phase === 'idle' && (
+            <div className="space-y-10">
+              <div>
+                <div className="eyebrow mb-4">
+                  <span>Analisis</span>
+                </div>
+                <h1 className="mb-4">{t.analyze_title}</h1>
+                <p className="text-[17px] text-[var(--color-slate)] max-w-xl leading-[1.5]">
+                  {lang === 'bm'
+                    ? 'Muat naik nota suara mencurigakan. Dalam 15 saat, kami berikan verdict, senarai red flag, dan soalan pengesahan peribadi.'
+                    : 'Upload a suspicious voice note. In 15 seconds, get a verdict, red flag list, and a personalized verification question.'}
+                </p>
               </div>
+
+              <Dropzone onFile={setFile} lang={lang} />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3"
+                  >
+                    {t.phone_label}
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder={t.phone_placeholder}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full rounded-full border border-[var(--color-ink)]/20 bg-white px-5 py-3 text-[15px] focus:border-[var(--color-ink)] focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3">
+                    {t.role_label}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {ROLES.map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setRole(r)}
+                        className={`ghost-chip cursor-pointer transition-all ${
+                          role === r ? 'chip-selected' : ''
+                        }`}
+                      >
+                        {t[`role_${r}` as keyof typeof t]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                disabled={!file}
+                onClick={startAnalysis}
+                className="ink-pill w-full justify-center py-4 text-[16px]"
+              >
+                <Sparkles size={18} />
+                {t.start_analysis}
+              </button>
             </div>
+          )}
 
-            <Button
-              size="lg"
-              className="w-full"
-              disabled={!file}
-              onClick={startAnalysis}
-            >
-              {t.start_analysis} →
-            </Button>
-          </div>
-        )}
+          {/* ───────── ANALYZING ───────── */}
+          {phase === 'analyzing' && (
+            <div className="space-y-6">
+              <div>
+                <div className="eyebrow mb-3">
+                  <span>{lang === 'bm' ? 'Memproses' : 'Processing'}</span>
+                </div>
+                <h2>{lang === 'bm' ? 'Menganalisis…' : 'Analyzing…'}</h2>
+                <p className="text-[15px] text-[var(--color-slate)] mt-2">
+                  {lang === 'bm'
+                    ? 'Empat ejen AI sedang bekerja. Sila tunggu.'
+                    : 'Four AI agents are working. Please wait.'}
+                </p>
+              </div>
+              <AgentStepper stages={stages} lang={lang} />
+            </div>
+          )}
 
-        {phase === 'analyzing' && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold tracking-tight">
-              {lang === 'bm' ? 'Menganalisis…' : 'Analyzing…'}
-            </h2>
-            <AgentStepper stages={stages} lang={lang} />
-          </div>
-        )}
+          {/* ───────── ERROR ───────── */}
+          {phase === 'error' && (
+            <div className="space-y-5">
+              <div className="flex items-start gap-4 px-6 py-5 rounded-[24px] bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/30">
+                <AlertCircle size={20} className="text-[var(--color-mc-red)] shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-[var(--color-mc-red)] mb-1">
+                    {t.error_generic}
+                  </div>
+                  <div className="text-[13px] text-[var(--color-slate)] font-mono break-all">
+                    {errorMsg || 'unknown'}
+                  </div>
+                </div>
+              </div>
+              <AgentStepper stages={stages} lang={lang} />
+              <button onClick={restart} className="outline-pill">
+                {t.analyze_another}
+              </button>
+            </div>
+          )}
 
-        {phase === 'error' && (
-          <div className="space-y-4">
-            <Alert variant="destructive">
-              <AlertDescription>{errorMsg || t.error_generic}</AlertDescription>
-            </Alert>
-            <AgentStepper stages={stages} lang={lang} />
-            <Button variant="outline" onClick={restart}>
-              {t.analyze_another}
-            </Button>
-          </div>
-        )}
-
-        {phase === 'done' && result && (
-          <ResultReport analysis={result} lang={lang} onRestart={restart} />
-        )}
+          {/* ───────── DONE ───────── */}
+          {phase === 'done' && result && (
+            <ResultReport analysis={result} lang={lang} onRestart={restart} />
+          )}
+        </div>
       </div>
 
-      <footer className="border-t text-xs text-muted-foreground text-center py-4">
-        <p>{t.footer_disclaimer}</p>
+      <footer className="bg-[var(--color-ink)] text-white/60 text-[12px] text-center py-6 px-6">
+        <p className="max-w-2xl mx-auto leading-[1.5]">{t.footer_disclaimer}</p>
       </footer>
     </main>
   );

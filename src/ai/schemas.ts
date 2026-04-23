@@ -86,11 +86,21 @@ export type ChallengeOutput = z.infer<typeof ChallengeOutput>;
 
 // ─── Phone Lookup Tool ───────────────────────────────────────────────────────
 
+export const ExternalSource = z.object({
+  name: z.string(),
+  url: z.string().url(),
+  description_bm: z.string(),
+  description_en: z.string(),
+});
+export type ExternalSource = z.infer<typeof ExternalSource>;
+
 export const PhoneLookupResult = z.object({
   found: z.boolean(),
   report_count: z.number().int().min(0).default(0),
   last_seen: z.string().optional(),
   tags: z.array(z.string()).default([]),
+  queried_phone: z.string().optional(),
+  external_sources: z.array(ExternalSource).default([]),
 });
 export type PhoneLookupResult = z.infer<typeof PhoneLookupResult>;
 

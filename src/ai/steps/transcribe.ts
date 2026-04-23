@@ -1,4 +1,4 @@
-import { ai, MODEL_FLASH } from '@/ai/genkit';
+import { ai, withRetry } from '@/ai/genkit';
 import { TranscribeInput, TranscribeOutput } from '@/ai/schemas';
 
 const SYSTEM_PROMPT = `You are an audio analyst for a Malaysian voice-scam shield called DengarDulu. Your job is to analyze ONE short voice note (typically 5-60 seconds) and produce a structured analysis.
@@ -32,19 +32,21 @@ export const transcribeStep = ai.defineFlow(
     outputSchema: TranscribeOutput,
   },
   async ({ audioBase64, mimeType }) => {
-    const { output } = await ai.generate({
-      model: MODEL_FLASH,
-      prompt: [
-        { text: SYSTEM_PROMPT },
-        {
-          media: {
-            url: `data:${mimeType};base64,${audioBase64}`,
-            contentType: mimeType,
+    const { output } = await withRetry((model) =>
+      ai.generate({
+        model,
+        prompt: [
+          { text: SYSTEM_PROMPT },
+          {
+            media: {
+              url: `data:${mimeType};base64,${audioBase64}`,
+              contentType: mimeType,
+            },
           },
-        },
-      ],
-      output: { schema: TranscribeOutput },
-    });
+        ],
+        output: { schema: TranscribeOutput },
+      })
+    );
 
     if (!output) {
       throw new Error('Transcribe step returned empty output');
