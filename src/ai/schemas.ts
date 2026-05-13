@@ -101,6 +101,7 @@ export const PhoneLookupResult = z.object({
   tags: z.array(z.string()).default([]),
   queried_phone: z.string().optional(),
   external_sources: z.array(ExternalSource).default([]),
+  source: z.enum(['semakmule', 'firestore', 'none']).default('none'),
 });
 export type PhoneLookupResult = z.infer<typeof PhoneLookupResult>;
 

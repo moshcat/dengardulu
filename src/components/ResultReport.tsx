@@ -14,6 +14,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Send,
+  BadgeCheck,
 } from 'lucide-react';
 import { VerdictBadge } from './VerdictBadge';
 import { messages, Lang } from '@/i18n/messages';
@@ -137,6 +138,13 @@ export function ResultReport({
 
       {/* Card 4 — Phone Reputation */}
       <Card icon={<Phone size={18} />} title={t.card_phone}>
+        {/* Source badge */}
+        {phone.source === 'semakmule' && (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F4EC] border border-[#0A7A3D]/20 text-[#0A7A3D] text-[11px] font-bold tracking-[0.04em] uppercase mb-4">
+            <BadgeCheck size={12} />
+            {lang === 'bm' ? 'Sumber: Semakmule PDRM · Data Langsung' : 'Source: Semakmule PDRM · Live Data'}
+          </div>
+        )}
         {phone.found ? (
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-full bg-[var(--color-mc-red)]/10 text-[var(--color-mc-red)] flex items-center justify-center shrink-0">
