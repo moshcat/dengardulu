@@ -49,3 +49,14 @@ dengardulu-*-sa.json
 application_default_credentials.json
 /tmp-audio/
 *.local
+
+# Internal design references, pitch drafts, video scripts (not for public repo)
+DESIGN.MD
+DESIGN.md
+/script-video.md
+/script-*.md
+/tests/fixtures/script-*.md
+/pitch-deck.md
+/pitch-*.md
+pitch-deck.pdf
+pitch-deck.pptx
