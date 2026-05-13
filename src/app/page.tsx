@@ -348,8 +348,8 @@ function SoundwaveBackdrop() {
       </defs>
       {Array.from({ length: 40 }).map((_, i) => {
         const x = 30 + i * 30;
-        const h = 80 + Math.sin(i * 0.45) * 120 + Math.cos(i * 1.2) * 60;
-        const y = 300 - h / 2;
+        const h = Math.round(80 + Math.sin(i * 0.45) * 120 + Math.cos(i * 1.2) * 60);
+        const y = Math.round(300 - h / 2);
         return (
           <rect
             key={i}
