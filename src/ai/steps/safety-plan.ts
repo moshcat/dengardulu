@@ -42,7 +42,7 @@ OUTPUT (always bilingual BM + EN)
 
 HOTLINES to include (always):
 - Police: 999
-- CCID (Commercial Crime Investigation): 03-2610 1522
+- CCID (Commercial Crime Investigation): 03-2610 1559
 - BNMTELELINK: 1-300-88-5465
 - Talian Kasih: 15999
 
