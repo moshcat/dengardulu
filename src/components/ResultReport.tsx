@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Send,
   BadgeCheck,
+  Share2,
 } from 'lucide-react';
 import { VerdictBadge } from './VerdictBadge';
 import { messages, Lang } from '@/i18n/messages';
@@ -275,13 +276,57 @@ export function ResultReport({
         </div>
       </Card>
 
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center gap-3 pt-4">
+        <ShareButton analysis={analysis} lang={lang} />
         <button onClick={onRestart} className="outline-pill">
           <RotateCcw size={16} />
           {t.analyze_another}
         </button>
       </div>
     </div>
+  );
+}
+
+function generateShareText(analysis: FullAnalysis, lang: Lang): string {
+  const { safety, challenge } = analysis;
+  const topFlags = safety.red_flags
+    .slice(0, 3)
+    .map((f) => `- ${lang === 'bm' ? f.label_bm : f.label_en}`)
+    .join('\n');
+  const question =
+    lang === 'bm'
+      ? challenge.questions[0].question_bm
+      : challenge.questions[0].question_en;
+
+  return lang === 'bm'
+    ? `DengarDulu — Analisis Nota Suara\n\nVerdict: ${safety.verdict} (${safety.suspicion_score}/100)\n\nBendera Merah:\n${topFlags}\n\nSoalan Pengesahan:\n"${question}"\n\nSemak sendiri di: https://dengardulu-169906713421.asia-southeast1.run.app`
+    : `DengarDulu — Voice Note Analysis\n\nVerdict: ${safety.verdict} (${safety.suspicion_score}/100)\n\nRed Flags:\n${topFlags}\n\nVerification Question:\n"${question}"\n\nCheck it yourself: https://dengardulu-169906713421.asia-southeast1.run.app`;
+}
+
+function ShareButton({ analysis, lang }: { analysis: FullAnalysis; lang: Lang }) {
+  const t = messages[lang];
+  const [shared, setShared] = useState(false);
+
+  const share = async () => {
+    const text = generateShareText(analysis, lang);
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'DengarDulu', text });
+      } catch {
+        // user cancelled share sheet
+      }
+    } else {
+      await navigator.clipboard.writeText(text);
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    }
+  };
+
+  return (
+    <button onClick={share} className="outline-pill">
+      {shared ? <Check size={16} /> : <Share2 size={16} />}
+      {shared ? t.share_copied : t.share_result}
+    </button>
   );
 }
 

@@ -70,6 +70,8 @@ export const messages = {
     urgency_later: 'Kemudian',
     hotlines: 'Nombor Hotline',
     analyze_another: 'Semak Lagi',
+    share_result: 'Kongsi Hasil',
+    share_copied: 'Disalin ke papan klip',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -145,6 +147,8 @@ export const messages = {
     urgency_later: 'Later',
     hotlines: 'Hotlines',
     analyze_another: 'Check Another',
+    share_result: 'Share Result',
+    share_copied: 'Copied to clipboard',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',
