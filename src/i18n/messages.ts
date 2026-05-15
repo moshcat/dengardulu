@@ -76,6 +76,10 @@ export const messages = {
     history_empty: 'Belum ada analisis',
     history_clear: 'Padam Sejarah',
     history_clear_confirm: 'Pasti padam semua?',
+    generate_report: 'Jana Laporan CCID',
+    copy_report: 'Salin Laporan',
+    go_to_ereporting: 'Pergi ke e-Reporting PDRM',
+    report_copied: 'Laporan disalin',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -157,6 +161,10 @@ export const messages = {
     history_empty: 'No analyses yet',
     history_clear: 'Clear History',
     history_clear_confirm: 'Clear all history?',
+    generate_report: 'Generate CCID Report',
+    copy_report: 'Copy Report',
+    go_to_ereporting: 'Go to PDRM e-Reporting',
+    report_copied: 'Report copied',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',
