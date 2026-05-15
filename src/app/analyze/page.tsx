@@ -66,17 +66,17 @@ export default function AnalyzePage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    if (!params.has('shared')) return;
-    caches.open('share-target').then((cache) =>
-      cache.match('/shared-audio').then(async (res) => {
-        if (!res) return;
+    const sharedId = params.get('shared');
+    if (!sharedId) return;
+    fetch(`/share-target?id=${sharedId}`)
+      .then(async (res) => {
+        if (!res.ok) return;
         const blob = await res.blob();
         const ext = blob.type.includes('ogg') ? 'opus' : blob.type.split('/')[1] || 'audio';
         setFile(new File([blob], `shared-audio.${ext}`, { type: blob.type || 'audio/ogg' }));
-        cache.delete('/shared-audio');
         window.history.replaceState({}, '', '/analyze');
       })
-    );
+      .catch(() => {});
   }, []);
 
   const updateStage = useCallback((id: string, patch: Partial<StepperStage>) => {
