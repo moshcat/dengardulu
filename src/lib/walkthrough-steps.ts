@@ -35,7 +35,6 @@ export const homepageSteps: WalkthroughStep[] = [
     desc_bm: 'Ada nota suara mencurigakan? Tekan sini untuk mula semak.',
   },
   {
-    target: '[data-tour="how-section"]',
     title_en: 'How It Works',
     title_bm: 'Cara Ia Berfungsi',
     desc_en: 'Scroll down to learn how DengarDulu protects you in 3 steps.',

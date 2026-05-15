@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Eye, EyeOff, Menu, X, Globe, HelpCircle } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff, Menu, X, Globe, HelpCircle, Download } from 'lucide-react';
+import { usePWAInstall } from '@/hooks/usePWAInstall';
 import { LogoWordmark } from './Logo';
 import { messages, Lang } from '@/i18n/messages';
 import {
@@ -24,6 +25,7 @@ export function NavBar({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isElderly, setIsElderly] = useState(false);
+  const { canInstall, install } = usePWAInstall();
   const t = messages[lang];
 
   useEffect(() => {
@@ -117,6 +119,18 @@ export function NavBar({
               {isElderly ? <Eye size={13} /> : <EyeOff size={13} />}
               <span className="hidden sm:inline">{isElderly ? 'ON' : 'OFF'}</span>
             </button>
+
+            {canInstall && (
+              <button
+                onClick={install}
+                title={t.install_app}
+                className={`${navBtnBase} bg-[var(--color-signal)] text-white border-[var(--color-signal)] gap-1 px-2.5`}
+                aria-label={t.install_app}
+              >
+                <Download size={13} />
+                <span className="hidden sm:inline">{t.install_app}</span>
+              </button>
+            )}
 
             <button
               onClick={() => window.dispatchEvent(new Event('walkthrough:restart'))}

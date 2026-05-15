@@ -113,10 +113,13 @@ export function Walkthrough({
   const title = lang === 'bm' ? current.title_bm : current.title_en;
   const desc = lang === 'bm' ? current.desc_bm : current.desc_en;
 
+  const tooltipHeight = 200;
+  const fitsBelow = rect ? rect.top + rect.height + 12 + tooltipHeight < window.innerHeight : true;
+
   const tooltipStyle: React.CSSProperties = rect
     ? {
         position: 'fixed',
-        top: rect.top + rect.height + 12,
+        top: fitsBelow ? rect.top + rect.height + 12 : rect.top - tooltipHeight - 12,
         left: Math.max(16, Math.min(rect.left, window.innerWidth - 320)),
         zIndex: 102,
       }
