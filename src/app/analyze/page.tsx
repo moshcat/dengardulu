@@ -7,6 +7,7 @@ import { LogoWordmark } from '@/components/Logo';
 import { Dropzone } from '@/components/Dropzone';
 import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
+import { ElderlyToggle } from '@/components/ElderlyToggle';
 import { saveAnalysis } from '@/lib/history';
 import { messages, Lang } from '@/i18n/messages';
 import type { FullAnalysis } from '@/ai/schemas';
@@ -201,6 +202,7 @@ export default function AnalyzePage() {
           >
             BM
           </button>
+          <ElderlyToggle lang={lang} />
         </div>
       </nav>
 

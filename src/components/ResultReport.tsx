@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Copy,
   Check,
@@ -41,6 +41,11 @@ export function ResultReport({
 }) {
   const t = messages[lang];
   const { transcribe, content, phone, challenge, safety } = analysis;
+  const [isElderly, setIsElderly] = useState(false);
+
+  useEffect(() => {
+    setIsElderly(document.documentElement.dataset.elderly === 'true');
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -52,21 +57,22 @@ export function ResultReport({
       />
 
       {/* Card 1 — Transcript + Voice Observations */}
-      <Card icon={<FileText size={18} />} title={t.card_transcript}>
-        <blockquote className="border-l-2 border-[var(--color-ink)]/20 pl-4 italic text-[15px] text-[var(--color-slate)] leading-[1.55]">
-          &ldquo;{transcribe.transcript}&rdquo;
-        </blockquote>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-5">
-          <KV label="Intonation" value={transcribe.voice_observations.intonation} />
-          <KV label="Pauses" value={transcribe.voice_observations.pauses} />
-          <KV
-            label="Breathing"
-            value={transcribe.voice_observations.breathing_present ? 'present' : 'absent'}
-          />
-          <KV label="Pitch" value={transcribe.voice_observations.pitch_stability} />
-          <KV label="Emotion" value={transcribe.voice_observations.emotion_authenticity} />
-          <KV label="Language" value={transcribe.language} />
-        </div>
+      {!isElderly && (
+        <Card icon={<FileText size={18} />} title={t.card_transcript}>
+          <blockquote className="border-l-2 border-[var(--color-ink)]/20 pl-4 italic text-[15px] text-[var(--color-slate)] leading-[1.55]">
+            &ldquo;{transcribe.transcript}&rdquo;
+          </blockquote>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-5">
+            <KV label="Intonation" value={transcribe.voice_observations.intonation} />
+            <KV label="Pauses" value={transcribe.voice_observations.pauses} />
+            <KV
+              label="Breathing"
+              value={transcribe.voice_observations.breathing_present ? 'present' : 'absent'}
+            />
+            <KV label="Pitch" value={transcribe.voice_observations.pitch_stability} />
+            <KV label="Emotion" value={transcribe.voice_observations.emotion_authenticity} />
+            <KV label="Language" value={transcribe.language} />
+          </div>
         {transcribe.voice_observations.synthetic_cues.length > 0 && (
           <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
             <div className="eyebrow mb-2">
@@ -82,6 +88,7 @@ export function ResultReport({
           </div>
         )}
       </Card>
+      )}
 
       {/* Card 2 — Red Flags */}
       <Card icon={<AlertTriangle size={18} />} title={t.card_red_flags}>
@@ -89,7 +96,7 @@ export function ResultReport({
           <p className="text-[14px] text-[var(--color-slate)] italic">—</p>
         ) : (
           <ul className="space-y-4">
-            {safety.red_flags.map((rf, i) => (
+            {(isElderly ? safety.red_flags.slice(0, 2) : safety.red_flags).map((rf, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span
                   className={`w-2.5 h-2.5 rounded-full mt-2 shrink-0 ${

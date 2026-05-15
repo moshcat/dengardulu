@@ -83,6 +83,10 @@ export const messages = {
     report_number: 'Laporkan Nombor Ini',
     report_success: 'Nombor Dilaporkan',
     report_error: 'Gagal melaporkan',
+    elderly_mode: 'Mode Mudah',
+    elderly_verdict_high: 'INI MUNGKIN PENIPUAN — JANGAN BALAS DULU',
+    elderly_verdict_medium: 'BERHATI-HATI — SAHKAN IDENTITI DULU',
+    elderly_verdict_low: 'KEMUNGKINAN SELAMAT',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -171,6 +175,10 @@ export const messages = {
     report_number: 'Report This Number',
     report_success: 'Number Reported',
     report_error: 'Failed to report',
+    elderly_mode: 'Easy Mode',
+    elderly_verdict_high: 'THIS MAY BE A SCAM — DO NOT REPLY YET',
+    elderly_verdict_medium: 'BE CAREFUL — VERIFY IDENTITY FIRST',
+    elderly_verdict_low: 'LIKELY SAFE',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',
