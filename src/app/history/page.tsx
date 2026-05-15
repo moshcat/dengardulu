@@ -7,6 +7,8 @@ import { NavBar } from '@/components/NavBar';
 import { getHistory, clearHistory, type HistoryEntry } from '@/lib/history';
 import { ResultReport } from '@/components/ResultReport';
 import { messages, Lang } from '@/i18n/messages';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export default function HistoryPage() {
   const [lang, setLang] = useState<Lang>('en');
@@ -34,13 +36,13 @@ export default function HistoryPage() {
     <div className="min-h-screen bg-[var(--color-canvas)]">
       <NavBar lang={lang} onLangChange={setLang} />
 
-      <main className="max-w-2xl mx-auto px-4 sm:px-6" style={{ paddingTop: 'calc(var(--nav-height, 4rem) + 2rem)', paddingBottom: '2rem' }}>
+      <main id="main-content" className="max-w-2xl mx-auto px-4 sm:px-6" style={{ paddingTop: 'calc(var(--nav-height) + 2rem)', paddingBottom: '2rem' }}>
         {entries.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[16px] text-[var(--color-slate)] mb-6">{t.history_empty}</p>
-            <Link href="/analyze" className="ink-pill inline-flex items-center gap-2">
+            <Button variant="ink-pill" size="pill" nativeButton={false} render={<Link href="/analyze" />}>
               Start Analysis
-            </Link>
+            </Button>
           </div>
         ) : (
           <>
@@ -57,17 +59,17 @@ export default function HistoryPage() {
                           {new Date(entry.timestamp).toLocaleString(lang === 'bm' ? 'ms-MY' : 'en-US')}
                         </div>
                         <div className="flex items-center gap-2 mb-2">
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-[0.04em] uppercase border ${
+                          <Badge
+                            variant={
                               entry.verdict === 'HIGH'
-                                ? 'border-[var(--color-mc-red)]/40 text-[var(--color-mc-red)] bg-[var(--color-mc-red)]/5'
+                                ? 'verdict-high'
                                 : entry.verdict === 'MEDIUM'
-                                ? 'border-[var(--color-signal)]/40 text-[var(--color-signal)] bg-[var(--color-signal)]/5'
-                                : 'border-[var(--color-border)] text-[var(--color-slate)]'
-                            }`}
+                                ? 'verdict-medium'
+                                : 'verdict-low'
+                            }
                           >
                             {entry.verdict} ({entry.score}/100)
-                          </span>
+                          </Badge>
                         </div>
                         <p className="text-[14px] text-[var(--color-granite)] line-clamp-2">
                           &ldquo;{entry.transcript_preview}{entry.full.transcribe.transcript.length > 80 ? '…' : ''}&rdquo;
@@ -89,10 +91,10 @@ export default function HistoryPage() {
             </div>
 
             <div className="flex justify-center pt-6">
-              <button onClick={handleClear} className="outline-pill">
+              <Button variant="outline-pill" size="pill" onClick={handleClear}>
                 <Trash2 size={16} />
                 {t.history_clear}
-              </button>
+              </Button>
             </div>
           </>
         )}

@@ -1,10 +1,17 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Eye, Menu, X } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff, Menu, X, Globe } from 'lucide-react';
 import { LogoWordmark } from './Logo';
 import { messages, Lang } from '@/i18n/messages';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from '@/components/ui/dropdown-menu';
 
 export function NavBar({
   lang,
@@ -15,24 +22,12 @@ export function NavBar({
   onLangChange: (lang: Lang) => void;
   onElderly?: (enabled: boolean) => void;
 }) {
-  const [langOpen, setLangOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isElderly, setIsElderly] = useState(false);
-  const langDropdownRef = useRef<HTMLDivElement>(null);
   const t = messages[lang];
 
   useEffect(() => {
     setIsElderly(document.documentElement.dataset.elderly === 'true');
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const toggleElderly = () => {
@@ -43,170 +38,117 @@ export function NavBar({
     onElderly?.(next);
   };
 
-  const handleLangSelect = (newLang: Lang) => {
-    onLangChange(newLang);
-    setLangOpen(false);
-  };
+  const navBtnBase =
+    'h-8 rounded-full border text-[12px] font-bold tracking-[0.02em] uppercase transition-colors flex items-center justify-center';
+  const navBtnIdle =
+    'bg-[var(--color-lifted)] text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-ink)]/40';
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-canvas)] border-b border-[var(--color-border)] backdrop-blur-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-canvas)]/95 backdrop-blur-sm border-b border-[var(--color-border)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Logo */}
+        <div className="flex items-center justify-between h-14 sm:h-16">
           <Link
             href="/"
-            className="flex-shrink-0 flex items-center hover:opacity-70 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
+            className="flex-shrink-0 flex items-center hover:opacity-70 transition-opacity"
             aria-label="DengarDulu home"
           >
-            <LogoWordmark size={28} />
+            <LogoWordmark size={24} />
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              href="#hero"
-              className="text-sm font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-            >
-              Home
-            </Link>
-            <Link
-              href="#how"
-              className="text-sm font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-            >
-              How it works
-            </Link>
-            <Link
-              href="#impact"
-              className="text-sm font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-            >
-              Impact
-            </Link>
-            <Link
-              href="/analyze"
-              className="text-sm font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-            >
-              Analyze
-            </Link>
-            <Link
-              href="/history"
-              className="text-sm font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-            >
-              History
-            </Link>
+          <div className="hidden md:flex items-center gap-6">
+            {[
+              { href: '/', label: 'Home' },
+              { href: '#how', label: 'How it works' },
+              { href: '#impact', label: 'Impact' },
+              { href: '/analyze', label: 'Analyze' },
+              { href: '/history', label: 'History' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[13px] font-medium text-[var(--color-granite)] hover:text-[var(--color-ink)] transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
-          {/* Right controls */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            {/* Language Dropdown */}
-            <div className="relative" ref={langDropdownRef}>
-              <button
-                onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--color-lifted)] border border-[var(--color-border)] text-xs sm:text-sm font-medium text-[var(--color-ink)] hover:border-[var(--color-ink)] active:bg-[var(--color-taupe)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
-                aria-haspopup="listbox"
-                aria-expanded={langOpen}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={`${navBtnBase} ${navBtnIdle} gap-1 px-2.5 cursor-pointer`}
+                aria-label="Select language"
               >
-                <span>{lang.toUpperCase()}</span>
-                <ChevronDown size={16} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {langOpen && (
-                <div
-                  className="absolute right-0 mt-2 bg-[var(--color-canvas)] border-2 border-[var(--color-ink)] rounded-lg shadow-lg z-50 min-w-32"
-                  role="listbox"
+                <Globe size={12} className="text-[var(--color-slate)]" />
+                <span>{lang === 'en' ? 'EN' : 'BM'}</span>
+                <ChevronDown size={10} className="text-[var(--color-slate)]" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-40 rounded-2xl bg-[var(--color-lifted)] border-[var(--color-border)]"
+              >
+                <DropdownMenuRadioGroup
+                  value={lang}
+                  onValueChange={(v) => onLangChange(v as Lang)}
                 >
-                  <button
-                    onClick={() => handleLangSelect('en')}
-                    className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors ${
-                      lang === 'en'
-                        ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                        : 'text-[var(--color-ink)] hover:bg-[var(--color-lifted)]'
-                    } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]`}
-                    role="option"
-                    aria-selected={lang === 'en'}
-                  >
+                  <DropdownMenuRadioItem value="en" className="rounded-xl text-[13px] font-medium py-2.5 px-4">
                     English
-                  </button>
-                  <button
-                    onClick={() => handleLangSelect('bm')}
-                    className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors border-t border-[var(--color-border)] ${
-                      lang === 'bm'
-                        ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                        : 'text-[var(--color-ink)] hover:bg-[var(--color-lifted)]'
-                    } focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]`}
-                    role="option"
-                    aria-selected={lang === 'bm'}
-                  >
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="bm" className="rounded-xl text-[13px] font-medium py-2.5 px-4">
                     Bahasa Melayu
-                  </button>
-                </div>
-              )}
-            </div>
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Easy Mode Toggle */}
             <button
               onClick={toggleElderly}
               title={t.elderly_mode}
-              className={`p-2 sm:p-2.5 rounded-lg transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)] ${
+              className={`${navBtnBase} gap-1 px-2.5 ${
                 isElderly
-                  ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                  : 'bg-[var(--color-lifted)] text-[var(--color-ink)] hover:border-[var(--color-ink)] border border-[var(--color-border)]'
+                  ? 'bg-[var(--color-signal)] text-white border-[var(--color-signal)]'
+                  : navBtnIdle
               }`}
               aria-label={t.elderly_mode}
               aria-pressed={isElderly}
             >
-              <Eye size={20} className="sm:w-5 sm:h-5" />
+              {isElderly ? <Eye size={13} /> : <EyeOff size={13} />}
+              <span className="hidden sm:inline">{isElderly ? 'ON' : 'OFF'}</span>
             </button>
 
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-lifted)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ink)]"
+              className={`${navBtnBase} ${navBtnIdle} w-8 md:hidden`}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileMenuOpen ? <X size={16} /> : <Menu size={16} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-[var(--color-border)] bg-[var(--color-lifted)] px-4 py-4 space-y-3">
-            <Link
-              href="#hero"
-              className="block text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors px-2 py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="#how"
-              className="block text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors px-2 py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              How it works
-            </Link>
-            <Link
-              href="#impact"
-              className="block text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors px-2 py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Impact
-            </Link>
-            <Link
-              href="/analyze"
-              className="block text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors px-2 py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Analyze
-            </Link>
-            <Link
-              href="/history"
-              className="block text-sm font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors px-2 py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              History
-            </Link>
+          <div
+            className="md:hidden border-t border-[var(--color-border)] bg-[var(--color-lifted)] -mx-4 px-6 py-2"
+            role="navigation"
+            aria-label="Mobile navigation"
+          >
+            {[
+              { href: '/', label: 'Home' },
+              { href: '#how', label: 'How it works' },
+              { href: '#impact', label: 'Impact' },
+              { href: '/analyze', label: 'Analyze' },
+              { href: '/history', label: 'History' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block text-[14px] font-medium text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors py-2.5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         )}
       </div>

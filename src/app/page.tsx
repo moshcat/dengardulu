@@ -6,6 +6,7 @@ import { ArrowRight, Shield, Waves, MessageCircleQuestion, PhoneCall, ExternalLi
 import { messages, Lang } from '@/i18n/messages';
 import { NavBar } from '@/components/NavBar';
 import { AgeOnboarding } from '@/components/AgeOnboarding';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>('en');
@@ -17,7 +18,7 @@ export default function Home() {
 
       <AgeOnboarding lang={lang} onComplete={() => {}} />
 
-      <main className="flex-1 pb-24" style={{ paddingTop: 'var(--nav-height, 4rem)' }}>
+      <main id="main-content" className="flex-1 pb-24" style={{ paddingTop: 'calc(var(--nav-height) + 1rem)' }}>
         {/* ───────── HERO STADIUM ───────── */}
         <section id="hero" className="px-6 mb-32">
           <div className="max-w-[1280px] mx-auto">
@@ -40,13 +41,25 @@ export default function Home() {
                     {t.hero_sub}
                   </p>
                   <div className="mt-10 flex flex-wrap gap-3">
-                    <Link href="/analyze" className="ink-pill !bg-[var(--color-canvas)] !text-[var(--color-ink)] !border-[var(--color-canvas)]">
+                    <Button
+                      variant="ink-pill"
+                      size="pill"
+                      nativeButton={false}
+                      className="bg-[var(--color-canvas)] text-[var(--color-ink)] border-[var(--color-canvas)]"
+                      render={<Link href="/analyze" />}
+                    >
                       {t.cta_check_now}
                       <ArrowRight size={18} />
-                    </Link>
-                    <a href="#how" className="outline-pill !bg-transparent !text-[var(--color-canvas)] !border-[var(--color-canvas)]/40">
+                    </Button>
+                    <Button
+                      variant="outline-pill"
+                      size="pill"
+                      nativeButton={false}
+                      className="bg-transparent text-[var(--color-canvas)] border-[var(--color-canvas)]/40"
+                      render={<a href="#how" />}
+                    >
                       How it works
-                    </a>
+                    </Button>
                   </div>
                 </div>
 
@@ -83,7 +96,7 @@ export default function Home() {
               <path d="M 180 340 Q 600 60 1020 340" fill="none" stroke="var(--color-signal-light)" strokeWidth="1" strokeDasharray="4,8" opacity="0.55" />
             </svg>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
               <Portrait
                 icon={<Waves size={56} strokeWidth={1.5} />}
                 eyebrow="01"
@@ -153,10 +166,10 @@ export default function Home() {
                 ? 'Mula analisis nota suara anda. Percuma. Tiada login.'
                 : 'Analyze your voice note now. Free. No login required.'}
             </p>
-            <Link href="/analyze" className="ink-pill">
+            <Button variant="ink-pill" size="pill" nativeButton={false} render={<Link href="/analyze" />}>
               {t.cta_check_now}
               <ArrowRight size={18} />
-            </Link>
+            </Button>
           </div>
         </section>
       </main>
@@ -214,10 +227,10 @@ export default function Home() {
 function Stat({ label, emphasis, subtle }: { label: string; emphasis: string; subtle?: boolean }) {
   return (
     <div>
-      <div className={`text-[36px] md:text-[44px] font-medium leading-none tracking-[-0.02em] ${subtle ? 'text-[var(--color-signal-light)]' : 'text-[var(--color-canvas)]'}`}>
+      <div className={`text-[52px] md:text-[64px] font-medium leading-none tracking-[-0.03em] ${subtle ? 'text-[var(--color-signal-light)]' : 'text-[var(--color-canvas)]'}`}>
         {emphasis}
       </div>
-      <div className="mt-2 text-[14px] text-[var(--color-taupe)] leading-[1.4]">
+      <div className="mt-3 text-[15px] text-[var(--color-taupe)] leading-[1.4]">
         {label}
       </div>
     </div>
@@ -246,14 +259,14 @@ function Portrait({
   };
 
   return (
-    <div className="relative flex flex-col items-center text-center" style={{ marginTop: offset }}>
-      <div className={`relative w-[240px] h-[240px] md:w-[280px] md:h-[280px] rounded-full flex items-center justify-center border ${bgMap[tone]}`}>
+    <div className="portrait-step relative flex flex-col items-center text-center" style={{ '--portrait-offset': `${offset}px` } as React.CSSProperties}>
+      <div className={`relative w-[180px] h-[180px] md:w-[260px] md:h-[260px] rounded-full flex items-center justify-center border ${bgMap[tone]}`}>
         {icon}
         <div className="satellite">
           <ArrowRight size={20} className="text-[var(--color-ink)]" />
         </div>
       </div>
-      <div className="eyebrow mt-12 mb-3">
+      <div className="eyebrow mt-8 mb-3">
         <span>{eyebrow}</span>
       </div>
       <h3 className="mb-3 max-w-[280px]">{title}</h3>
@@ -268,18 +281,16 @@ function HotlineRow({ icon, label, number }: { icon: string; label: string; numb
   return (
     <a
       href={`tel:${number.replace(/[^0-9+]/g, '')}`}
-      className="flex items-center justify-between gap-4 px-5 py-4 rounded-full bg-[var(--color-canvas)] border border-[var(--color-border)] hover:border-[var(--color-ink)] transition-colors"
+      className="flex items-center gap-4 px-5 py-4 rounded-[16px] bg-[var(--color-canvas)] border border-[var(--color-border)] hover:border-[var(--color-ink)] transition-colors"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[var(--color-ink)] text-[var(--color-canvas)] flex items-center justify-center">
-          <PhoneCall size={16} />
-        </div>
-        <div>
-          <div className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-slate)]">{icon}</div>
-          <div className="text-[14px] font-medium leading-[1.2]">{label}</div>
-        </div>
+      <div className="w-10 h-10 rounded-full bg-[var(--color-ink)] text-[var(--color-canvas)] flex items-center justify-center shrink-0">
+        <PhoneCall size={15} />
       </div>
-      <div className="text-[15px] font-semibold tracking-tight">{number}</div>
+      <div className="min-w-0">
+        <div className="text-[11px] font-bold tracking-[0.04em] uppercase text-[var(--color-slate)]">{icon}</div>
+        <div className="text-[14px] font-medium leading-[1.3]">{label}</div>
+        <div className="text-[14px] font-semibold tracking-tight text-[var(--color-ink)] mt-0.5">{number}</div>
+      </div>
     </a>
   );
 }

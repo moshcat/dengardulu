@@ -98,62 +98,49 @@ export async function lookupPhoneReputation(phone: string): Promise<PhoneLookupR
 
   const { full, last8 } = normalizePhone(queried);
 
-  // ── 1. Try Semakmule live API ────────────────────────────────────────────────
-  // Try with local format first (e.g. 0172345678), then with full cleaned string
-  const semakmuleResult =
-    (await querySemakmule(full)) ??
-    (full.startsWith('60') ? await querySemakmule('0' + full.slice(2)) : null) ??
-    (full.startsWith('+60') ? await querySemakmule('0' + full.slice(3)) : null);
+  // ── 1. Query Semakmule + Firestore in parallel ─────────────────────────────
+  const [semakmuleResult, firestoreResult] = await Promise.all([
+    (async () => {
+      return (
+        (await querySemakmule(full)) ??
+        (full.startsWith('60') ? await querySemakmule('0' + full.slice(2)) : null) ??
+        (full.startsWith('+60') ? await querySemakmule('0' + full.slice(3)) : null)
+      );
+    })(),
+    (async () => {
+      const collection = db().collection('scam_numbers');
+      const byFull = await collection.where('phone', '==', full).limit(1).get();
+      if (!byFull.empty) return byFull.docs[0].data();
+      const byLast8 = await collection.where('phone_hash_last8', '==', last8).limit(1).get();
+      if (!byLast8.empty) return byLast8.docs[0].data();
+      return null;
+    })(),
+  ]);
 
-  if (semakmuleResult !== null) {
-    return {
-      found: semakmuleResult.found,
-      report_count: semakmuleResult.report_count,
-      tags: [],
-      queried_phone: queried,
-      external_sources: external,
-      source: 'semakmule',
-    };
-  }
+  // ── 2. Merge results ───────────────────────────────────────────────────────
+  const hasSemakmule = semakmuleResult !== null;
+  const hasFirestore = firestoreResult !== null;
 
-  // ── 2. Fallback: Firestore seed + community reports ──────────────────────────
-  const collection = db().collection('scam_numbers');
+  const semakmuleCount = semakmuleResult?.report_count ?? 0;
+  const firestoreCount = (firestoreResult?.reports as number) ?? 0;
 
-  const byFull = await collection.where('phone', '==', full).limit(1).get();
-  if (!byFull.empty) {
-    const d = byFull.docs[0].data();
-    return {
-      found: true,
-      report_count: d.reports ?? 0,
-      last_seen: d.last_seen,
-      tags: d.tags ?? [],
-      queried_phone: queried,
-      external_sources: external,
-      source: 'firestore',
-    };
-  }
+  const found = (hasSemakmule && semakmuleResult.found) || hasFirestore;
+  const report_count = semakmuleCount + firestoreCount;
 
-  const byLast8 = await collection.where('phone_hash_last8', '==', last8).limit(1).get();
-  if (!byLast8.empty) {
-    const d = byLast8.docs[0].data();
-    return {
-      found: true,
-      report_count: d.reports ?? 0,
-      last_seen: d.last_seen,
-      tags: d.tags ?? [],
-      queried_phone: queried,
-      external_sources: external,
-      source: 'firestore',
-    };
-  }
+  const source = hasSemakmule && hasFirestore
+    ? 'semakmule+firestore'
+    : hasSemakmule
+    ? 'semakmule'
+    : 'firestore';
 
   return {
-    found: false,
-    report_count: 0,
-    tags: [],
+    found,
+    report_count,
+    last_seen: (firestoreResult?.last_seen as string) ?? undefined,
+    tags: (firestoreResult?.tags as string[]) ?? [],
     queried_phone: queried,
     external_sources: external,
-    source: 'firestore',
+    source,
   };
 }
 
