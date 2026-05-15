@@ -7,6 +7,7 @@ import { LogoWordmark } from '@/components/Logo';
 import { Dropzone } from '@/components/Dropzone';
 import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
+import { saveAnalysis } from '@/lib/history';
 import { messages, Lang } from '@/i18n/messages';
 import type { FullAnalysis } from '@/ai/schemas';
 
@@ -145,7 +146,9 @@ export default function AnalyzePage() {
         break;
       case 'done':
         updateStage('safety', { status: 'done', data: event.data });
-        setResult(event.data as FullAnalysis);
+        const analysis = event.data as FullAnalysis;
+        setResult(analysis);
+        saveAnalysis(analysis, { phone, role });
         setPhase('done');
         break;
       case 'error':

@@ -72,6 +72,10 @@ export const messages = {
     analyze_another: 'Semak Lagi',
     share_result: 'Kongsi Hasil',
     share_copied: 'Disalin ke papan klip',
+    history_title: 'Sejarah Analisis',
+    history_empty: 'Belum ada analisis',
+    history_clear: 'Padam Sejarah',
+    history_clear_confirm: 'Pasti padam semua?',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -149,6 +153,10 @@ export const messages = {
     analyze_another: 'Check Another',
     share_result: 'Share Result',
     share_copied: 'Copied to clipboard',
+    history_title: 'Analysis History',
+    history_empty: 'No analyses yet',
+    history_clear: 'Clear History',
+    history_clear_confirm: 'Clear all history?',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',

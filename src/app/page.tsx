@@ -20,6 +20,7 @@ export default function Home() {
           <a href="#how" className="hover:opacity-60 transition-opacity">How it works</a>
           <a href="#impact" className="hover:opacity-60 transition-opacity">Impact</a>
           <Link href="/analyze" className="hover:opacity-60 transition-opacity">Analyze</Link>
+          <Link href="/history" className="hover:opacity-60 transition-opacity">History</Link>
         </div>
         <div className="flex items-center gap-2">
           <button
