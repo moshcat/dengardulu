@@ -230,6 +230,11 @@ export function ResultReport({
             )}
           </div>
         )}
+        {phone.queried_phone && (
+          <div className="mt-4">
+            <ReportButton phone={phone.queried_phone} lang={lang} />
+          </div>
+        )}
       </Card>
 
       {/* Card 5 — Action Plan + Hotlines */}
@@ -296,6 +301,49 @@ export function ResultReport({
         </button>
       </div>
     </div>
+  );
+}
+
+function ReportButton({ phone, lang }: { phone: string; lang: Lang }) {
+  const t = messages[lang];
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+
+  const report = async () => {
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/report-number', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      if (res.ok) {
+        setStatus('done');
+        setTimeout(() => setStatus('idle'), 2000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 2000);
+      }
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 2000);
+    }
+  };
+
+  return (
+    <button
+      onClick={report}
+      disabled={status === 'loading' || status === 'done'}
+      className="w-full outline-pill justify-center"
+    >
+      {status === 'done' ? <Check size={16} /> : <AlertTriangle size={16} />}
+      {status === 'loading'
+        ? t.report_number
+        : status === 'done'
+        ? t.report_success
+        : status === 'error'
+        ? t.report_error
+        : t.report_number}
+    </button>
   );
 }
 

@@ -80,6 +80,9 @@ export const messages = {
     copy_report: 'Salin Laporan',
     go_to_ereporting: 'Pergi ke e-Reporting PDRM',
     report_copied: 'Laporan disalin',
+    report_number: 'Laporkan Nombor Ini',
+    report_success: 'Nombor Dilaporkan',
+    report_error: 'Gagal melaporkan',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -165,6 +168,9 @@ export const messages = {
     copy_report: 'Copy Report',
     go_to_ereporting: 'Go to PDRM e-Reporting',
     report_copied: 'Report copied',
+    report_number: 'Report This Number',
+    report_success: 'Number Reported',
+    report_error: 'Failed to report',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',
