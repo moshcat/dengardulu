@@ -14,6 +14,12 @@ function cleanup() {
   }
 }
 
+function publicUrl(req: NextRequest, path: string): URL {
+  const proto = req.headers.get('x-forwarded-proto') || 'https';
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host;
+  return new URL(path, `${proto}://${host}`);
+}
+
 export async function POST(req: NextRequest) {
   cleanup();
 
@@ -21,14 +27,14 @@ export async function POST(req: NextRequest) {
   const file = formData.get('audio') as File | null;
 
   if (!file) {
-    return NextResponse.redirect(new URL('/analyze', req.url), 303);
+    return NextResponse.redirect(publicUrl(req, '/analyze'), 303);
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const id = randomUUID();
   pending.set(id, { buffer, type: file.type || 'audio/ogg', expires: Date.now() + EXPIRY_MS });
 
-  return NextResponse.redirect(new URL(`/analyze?shared=${id}`, req.url), 303);
+  return NextResponse.redirect(publicUrl(req, `/analyze?shared=${id}`), 303);
 }
 
 export async function GET(req: NextRequest) {
