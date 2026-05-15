@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Eye, EyeOff, Menu, X, Globe } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff, Menu, X, Globe, HelpCircle } from 'lucide-react';
 import { LogoWordmark } from './Logo';
 import { messages, Lang } from '@/i18n/messages';
 import {
@@ -76,6 +76,7 @@ export function NavBar({
           <div className="flex items-center gap-1.5 sm:gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger
+                data-tour="lang-switch"
                 className={`${navBtnBase} ${navBtnIdle} gap-1 px-2.5 cursor-pointer`}
                 aria-label="Select language"
               >
@@ -103,6 +104,7 @@ export function NavBar({
 
             <button
               onClick={toggleElderly}
+              data-tour="easy-mode"
               title={t.elderly_mode}
               className={`${navBtnBase} gap-1 px-2.5 ${
                 isElderly
@@ -114,6 +116,15 @@ export function NavBar({
             >
               {isElderly ? <Eye size={13} /> : <EyeOff size={13} />}
               <span className="hidden sm:inline">{isElderly ? 'ON' : 'OFF'}</span>
+            </button>
+
+            <button
+              onClick={() => window.dispatchEvent(new Event('walkthrough:restart'))}
+              title={lang === 'bm' ? 'Panduan' : 'Tour'}
+              className={`${navBtnBase} ${navBtnIdle} w-8`}
+              aria-label="Restart tour"
+            >
+              <HelpCircle size={13} />
             </button>
 
             <button

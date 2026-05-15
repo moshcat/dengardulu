@@ -9,6 +9,8 @@ import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
 import { saveAnalysis } from '@/lib/history';
 import { messages, Lang } from '@/i18n/messages';
+import { Walkthrough } from '@/components/Walkthrough';
+import { analyzeSteps } from '@/lib/walkthrough-steps';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -225,10 +227,12 @@ export default function AnalyzePage() {
                 </p>
               </div>
 
-              <Dropzone onFile={setFile} file={file} lang={lang} />
+              <div data-tour="dropzone">
+                <Dropzone onFile={setFile} file={file} lang={lang} />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div data-tour="phone-input">
                   <label
                     htmlFor="phone"
                     className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3"
@@ -245,7 +249,7 @@ export default function AnalyzePage() {
                   />
                 </div>
 
-                <div>
+                <div data-tour="role-selector">
                   <label
                     className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3"
                     id="role-label"
@@ -283,6 +287,7 @@ export default function AnalyzePage() {
                 size="pill-lg"
                 disabled={!file}
                 onClick={startAnalysis}
+                data-tour="start-btn"
               >
                 <Sparkles size={18} />
                 {t.start_analysis}
@@ -339,6 +344,10 @@ export default function AnalyzePage() {
       <footer className="bg-[var(--color-ink)] text-white/60 text-[12px] text-center py-6 px-6">
         <p className="max-w-2xl mx-auto leading-[1.5]">{t.footer_disclaimer}</p>
       </footer>
+
+      {phase === 'idle' && (
+        <Walkthrough steps={analyzeSteps} lang={lang} storageKey="dengardulu_tour_analyze" />
+      )}
     </div>
   );
 }

@@ -6,6 +6,8 @@ import { ArrowRight, Shield, Waves, MessageCircleQuestion, PhoneCall, ExternalLi
 import { messages, Lang } from '@/i18n/messages';
 import { NavBar } from '@/components/NavBar';
 import { AgeOnboarding } from '@/components/AgeOnboarding';
+import { Walkthrough } from '@/components/Walkthrough';
+import { homepageSteps } from '@/lib/walkthrough-steps';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -17,6 +19,7 @@ export default function Home() {
       <NavBar lang={lang} onLangChange={setLang} />
 
       <AgeOnboarding lang={lang} onComplete={() => {}} />
+      <Walkthrough steps={homepageSteps} lang={lang} storageKey="dengardulu_tour_home" />
 
       <main id="main-content" className="flex-1 pb-24" style={{ paddingTop: 'calc(var(--nav-height) + 1rem)' }}>
         {/* ───────── HERO STADIUM ───────── */}
@@ -45,6 +48,7 @@ export default function Home() {
                       variant="ink-pill"
                       size="pill"
                       nativeButton={false}
+                      data-tour="cta-check"
                       className="bg-[var(--color-canvas)] text-[var(--color-ink)] border-[var(--color-canvas)]"
                       render={<Link href="/analyze" />}
                     >
@@ -75,7 +79,7 @@ export default function Home() {
         </section>
 
         {/* ───────── GHOST WATERMARK SECTION HEADER ───────── */}
-        <section id="how" className="relative px-6 py-20 overflow-hidden">
+        <section id="how" data-tour="how-section" className="relative px-6 py-20 overflow-hidden">
           <div className="ghost-watermark absolute top-4 left-1/2 -translate-x-1/2 text-[140px] md:text-[220px] whitespace-nowrap -z-10">
             {lang === 'bm' ? 'BAGAIMANA' : 'HOW IT WORKS'}
           </div>
