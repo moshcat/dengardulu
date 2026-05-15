@@ -178,13 +178,13 @@ export default function AnalyzePage() {
     <main className="min-h-screen flex flex-col">
       {/* Floating nav */}
       <nav className="floating-nav">
-        <Link href="/" className="hover:opacity-80 transition-opacity">
-          <LogoWordmark size={28} />
+        <Link href="/" className="hover:opacity-80 transition-opacity flex-shrink-0">
+          <LogoWordmark size={22} />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
           <button
             onClick={() => setLang('en')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-colors ${
               lang === 'en'
                 ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
                 : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
@@ -194,7 +194,7 @@ export default function AnalyzePage() {
           </button>
           <button
             onClick={() => setLang('bm')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-colors ${
               lang === 'bm'
                 ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
                 : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'

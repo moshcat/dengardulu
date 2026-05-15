@@ -402,7 +402,7 @@ function CcidReportDialog({ analysis, lang }: { analysis: FullAnalysis; lang: La
         <DialogHeader>
           <DialogTitle>{t.generate_report}</DialogTitle>
         </DialogHeader>
-        <pre className="max-h-64 overflow-auto rounded-lg bg-[var(--color-canvas)] p-4 text-[12px] leading-[1.5] border border-[var(--color-border)]">
+        <pre className="max-h-64 overflow-x-auto overflow-y-auto rounded-lg bg-[var(--color-canvas)] p-3 sm:p-4 text-[10px] sm:text-[12px] leading-[1.4] sm:leading-[1.5] border border-[var(--color-border)] whitespace-pre-wrap break-words font-mono">
           {report}
         </pre>
         <DialogFooter showCloseButton={false}>

@@ -30,15 +30,15 @@ export function ElderlyToggle({ lang }: { lang: Lang }) {
   return (
     <button
       onClick={toggle}
-      className={`px-3 py-1 rounded-full text-[12px] font-medium border transition-colors ${
+      className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-[12px] font-medium border transition-colors inline-flex items-center gap-1 sm:gap-1.5 ${
         enabled
           ? 'bg-[var(--color-ink)] text-[var(--color-canvas)] border-[var(--color-ink)]'
           : 'bg-[var(--color-lifted)] border-[var(--color-border)] hover:bg-[var(--color-bone)]'
       }`}
       title={t.elderly_mode}
     >
-      <Eye size={14} className="inline mr-1" />
-      {t.elderly_mode}
+      <Eye size={12} className="sm:w-[14px] sm:h-[14px]" />
+      <span className="hidden sm:inline">{t.elderly_mode}</span>
     </button>
   );
 }
