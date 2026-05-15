@@ -68,15 +68,19 @@ export default function AnalyzePage() {
     const params = new URLSearchParams(window.location.search);
     const sharedId = params.get('shared');
     if (!sharedId) return;
+
     fetch(`/share-target?id=${sharedId}`)
       .then(async (res) => {
-        if (!res.ok) return;
+        if (!res.ok) {
+          console.error('share-target GET failed:', res.status, await res.text());
+          return;
+        }
         const blob = await res.blob();
         const ext = blob.type.includes('ogg') ? 'opus' : blob.type.split('/')[1] || 'audio';
         setFile(new File([blob], `shared-audio.${ext}`, { type: blob.type || 'audio/ogg' }));
         window.history.replaceState({}, '', '/analyze');
       })
-      .catch(() => {});
+      .catch((err) => console.error('share-target fetch error:', err));
   }, []);
 
   const updateStage = useCallback((id: string, patch: Partial<StepperStage>) => {
@@ -221,7 +225,7 @@ export default function AnalyzePage() {
                 </p>
               </div>
 
-              <Dropzone onFile={setFile} lang={lang} />
+              <Dropzone onFile={setFile} file={file} lang={lang} />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>

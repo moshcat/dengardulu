@@ -13,11 +13,13 @@ const ACCEPT =
 export type DropzoneProps = {
   onFile: (file: File | null) => void;
   lang: Lang;
+  file?: File | null;
 };
 
-export function Dropzone({ onFile, lang }: DropzoneProps) {
+export function Dropzone({ onFile, lang, file: externalFile }: DropzoneProps) {
   const t = messages[lang];
-  const [file, setFile] = useState<File | null>(null);
+  const [internalFile, setInternalFile] = useState<File | null>(null);
+  const file = externalFile ?? internalFile;
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,14 +37,14 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
         return;
       }
       setError(null);
-      setFile(f);
+      setInternalFile(f);
       onFile(f);
     },
     [onFile, t]
   );
 
   const clear = () => {
-    setFile(null);
+    setInternalFile(null);
     setError(null);
     onFile(null);
     if (inputRef.current) inputRef.current.value = '';
