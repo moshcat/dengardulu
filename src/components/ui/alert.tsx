@@ -4,13 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-  "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
+  "group/alert relative w-full text-left text-sm",
   {
     variants: {
       variant: {
-        default: "bg-card text-card-foreground",
+        default:
+          "grid gap-0.5 rounded-lg border px-2.5 py-2 bg-card text-card-foreground has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
         destructive:
-          "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
+          "grid gap-0.5 rounded-lg border px-2.5 py-2 bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg:not([class*='size-'])]:size-4",
+        "destructive-pill":
+          "flex items-start gap-3 rounded-[20px] px-5 py-4 bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/20 text-[var(--color-mc-red)] *:[svg]:shrink-0 *:[svg]:mt-0.5",
+        "destructive-pill-lg":
+          "flex items-start gap-4 rounded-[24px] px-6 py-5 bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/30 text-[var(--color-mc-red)] *:[svg]:shrink-0 *:[svg]:mt-0.5",
       },
     },
     defaultVariants: {
