@@ -3,11 +3,10 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle, Sparkles } from 'lucide-react';
-import { LogoWordmark } from '@/components/Logo';
+import { NavBar } from '@/components/NavBar';
 import { Dropzone } from '@/components/Dropzone';
 import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
-import { ElderlyToggle } from '@/components/ElderlyToggle';
 import { saveAnalysis } from '@/lib/history';
 import { messages, Lang } from '@/i18n/messages';
 import type { FullAnalysis } from '@/ai/schemas';
@@ -176,37 +175,9 @@ export default function AnalyzePage() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      {/* Floating nav */}
-      <nav className="floating-nav">
-        <Link href="/" className="hover:opacity-80 transition-opacity flex-shrink-0">
-          <LogoWordmark size={22} />
-        </Link>
-        <div className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2">
-          <button
-            onClick={() => setLang('en')}
-            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-colors ${
-              lang === 'en'
-                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            EN
-          </button>
-          <button
-            onClick={() => setLang('bm')}
-            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold transition-colors ${
-              lang === 'bm'
-                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            BM
-          </button>
-          <ElderlyToggle lang={lang} />
-        </div>
-      </nav>
+      <NavBar lang={lang} onLangChange={setLang} />
 
-      <div className="flex-1 pt-32 pb-16 px-6">
+      <div className="flex-1 pb-16 px-6" style={{ paddingTop: 'var(--nav-height, 4rem)' }}>
         <div className="max-w-[880px] w-full mx-auto space-y-8">
           <Link
             href="/"

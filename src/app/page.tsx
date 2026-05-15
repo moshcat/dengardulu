@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowRight, Shield, Waves, MessageCircleQuestion, PhoneCall, ExternalLink } from 'lucide-react';
 import { messages, Lang } from '@/i18n/messages';
-import { LogoWordmark } from '@/components/Logo';
+import { NavBar } from '@/components/NavBar';
+import { AgeOnboarding } from '@/components/AgeOnboarding';
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>('en');
@@ -12,37 +13,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Floating Navigation Pill */}
-      <nav className="floating-nav">
-        <LogoWordmark size={28} />
-        <div className="hidden md:flex items-center gap-10 text-[15px] font-medium">
-          <a href="#hero" className="hover:opacity-60 transition-opacity">Home</a>
-          <a href="#how" className="hover:opacity-60 transition-opacity">How it works</a>
-          <a href="#impact" className="hover:opacity-60 transition-opacity">Impact</a>
-          <Link href="/analyze" className="hover:opacity-60 transition-opacity">Analyze</Link>
-          <Link href="/history" className="hover:opacity-60 transition-opacity">History</Link>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setLang('en')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-              lang === 'en' ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]' : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            EN
-          </button>
-          <button
-            onClick={() => setLang('bm')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-              lang === 'bm' ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]' : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            BM
-          </button>
-        </div>
-      </nav>
+      <NavBar lang={lang} onLangChange={setLang} />
 
-      <main className="flex-1 pt-32 pb-24">
+      <AgeOnboarding lang={lang} onComplete={() => {}} />
+
+      <main className="flex-1 pb-24" style={{ paddingTop: 'var(--nav-height, 4rem)' }}>
         {/* ───────── HERO STADIUM ───────── */}
         <section id="hero" className="px-6 mb-32">
           <div className="max-w-[1280px] mx-auto">

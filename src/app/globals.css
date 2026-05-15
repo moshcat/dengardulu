@@ -238,6 +238,9 @@
     gap: 32px;
     width: calc(100% - 48px);
   }
+  :root {
+    --nav-height: 5rem;
+  }
 }
 
 /* Decorative orbital arc */

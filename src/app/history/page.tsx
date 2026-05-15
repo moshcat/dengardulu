@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Trash2 } from 'lucide-react';
+import { NavBar } from '@/components/NavBar';
 import { getHistory, clearHistory, type HistoryEntry } from '@/lib/history';
 import { ResultReport } from '@/components/ResultReport';
 import { messages, Lang } from '@/i18n/messages';
@@ -31,23 +32,9 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-canvas)]">
-      <nav className="floating-nav">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-60 transition-opacity">
-          <ArrowLeft size={18} />
-          <span className="text-[14px] font-medium">Back</span>
-        </Link>
-        <h1 className="text-[18px] font-medium">{t.history_title}</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setLang(lang === 'bm' ? 'en' : 'bm')}
-            className="px-3 py-1 rounded-full bg-[var(--color-lifted)] border border-[var(--color-border)] text-[12px] font-medium hover:bg-[var(--color-bone)] transition-colors"
-          >
-            {lang === 'bm' ? 'EN' : 'BM'}
-          </button>
-        </div>
-      </nav>
+      <NavBar lang={lang} onLangChange={setLang} />
 
-      <main className="max-w-2xl mx-auto px-4 py-24 sm:px-6">
+      <main className="max-w-2xl mx-auto px-4 sm:px-6" style={{ paddingTop: 'calc(var(--nav-height, 4rem) + 2rem)', paddingBottom: '2rem' }}>
         {entries.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[16px] text-[var(--color-slate)] mb-6">{t.history_empty}</p>

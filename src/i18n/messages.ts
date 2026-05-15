@@ -87,6 +87,10 @@ export const messages = {
     elderly_verdict_high: 'INI MUNGKIN PENIPUAN — JANGAN BALAS DULU',
     elderly_verdict_medium: 'BERHATI-HATI — SAHKAN IDENTITI DULU',
     elderly_verdict_low: 'KEMUNGKINAN SELAMAT',
+    onboarding_title: 'Selamat Datang',
+    onboarding_question: 'Adakah anda berusia 50 tahun ke atas? Kami ada mod khusus dengan huruf lebih besar dan interface yang lebih mudah untuk pengguna seperti anda.',
+    onboarding_yes: 'Ya',
+    onboarding_no: 'Tidak',
 
     // Errors
     error_generic: 'Ada kesalahan. Cuba lagi.',
@@ -179,6 +183,10 @@ export const messages = {
     elderly_verdict_high: 'THIS MAY BE A SCAM — DO NOT REPLY YET',
     elderly_verdict_medium: 'BE CAREFUL — VERIFY IDENTITY FIRST',
     elderly_verdict_low: 'LIKELY SAFE',
+    onboarding_title: 'Welcome',
+    onboarding_question: 'Are you 50 years old or older? We have a special Easy Mode with larger text and a simpler interface designed for you.',
+    onboarding_yes: 'Yes',
+    onboarding_no: 'No',
 
     error_generic: 'Something went wrong. Try again.',
     error_audio_too_large: 'Audio file exceeds 20 MB. Trim it first.',
