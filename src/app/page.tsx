@@ -18,8 +18,10 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <NavBar lang={lang} onLangChange={setLang} />
 
-      <AgeOnboarding lang={lang} onComplete={() => {}} />
-      <Walkthrough steps={homepageSteps} lang={lang} storageKey="dengardulu_tour_home" />
+      <AgeOnboarding lang={lang} onComplete={() => {
+        window.dispatchEvent(new CustomEvent('walkthrough:start'));
+      }} />
+      <Walkthrough steps={homepageSteps} lang={lang} storageKey="dengardulu_tour_home" defer />
 
       <main id="main-content" className="flex-1 pb-24" style={{ paddingTop: 'calc(var(--nav-height) + 1rem)' }}>
         {/* ───────── HERO STADIUM ───────── */}

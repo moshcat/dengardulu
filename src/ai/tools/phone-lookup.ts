@@ -75,8 +75,9 @@ async function querySemakmule(phone: string): Promise<{ found: boolean; report_c
     // table_data is [[phone, report_count], ...] — use first row's report count
     // json.count is the total DB records matching query (different from per-number reports)
     const rows: [string, number][] = Array.isArray(json.table_data) ? json.table_data : [];
-    const report_count = rows.length > 0 && typeof rows[0][1] === 'number' ? rows[0][1] : 0;
-    return { found: rows.length > 0, report_count };
+    if (rows.length === 0) return null;
+    const report_count = typeof rows[0][1] === 'number' ? rows[0][1] : 0;
+    return { found: true, report_count };
   } catch {
     return null;
   }
@@ -124,7 +125,7 @@ export async function lookupPhoneReputation(phone: string): Promise<PhoneLookupR
   const semakmuleCount = semakmuleResult?.report_count ?? 0;
   const firestoreCount = (firestoreResult?.reports as number) ?? 0;
 
-  const found = (hasSemakmule && semakmuleResult.found) || hasFirestore;
+  const found = hasSemakmule || hasFirestore;
   const report_count = semakmuleCount + firestoreCount;
 
   const source = hasSemakmule && hasFirestore

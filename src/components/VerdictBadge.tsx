@@ -10,15 +10,18 @@ export function VerdictBadge({
   score,
   headline,
   lang,
+  isElderly,
 }: {
   verdict: Verdict;
   score: number;
   headline: string;
   lang: Lang;
+  isElderly?: boolean;
 }) {
   const t = messages[lang];
-  const label =
-    verdict === 'HIGH' ? t.verdict_high : verdict === 'MEDIUM' ? t.verdict_medium : t.verdict_low;
+  const label = isElderly
+    ? (verdict === 'HIGH' ? t.elderly_verdict_high : verdict === 'MEDIUM' ? t.elderly_verdict_medium : t.elderly_verdict_low)
+    : (verdict === 'HIGH' ? t.verdict_high : verdict === 'MEDIUM' ? t.verdict_medium : t.verdict_low);
   const Icon =
     verdict === 'HIGH' ? ShieldAlert : verdict === 'MEDIUM' ? ShieldQuestion : ShieldCheck;
 

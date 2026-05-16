@@ -13,11 +13,13 @@ export function Walkthrough({
   lang,
   storageKey,
   onComplete,
+  defer,
 }: {
   steps: WalkthroughStep[];
   lang: Lang;
   storageKey: string;
   onComplete?: () => void;
+  defer?: boolean;
 }) {
   const [active, setActive] = useState(false);
   const [step, setStep] = useState(0);
@@ -26,11 +28,19 @@ export function Walkthrough({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (!localStorage.getItem(storageKey)) {
-      const timer = setTimeout(() => setActive(true), 800);
-      return () => clearTimeout(timer);
+    if (localStorage.getItem(storageKey)) return;
+    if (defer) {
+      if (localStorage.getItem('dengardulu_age_onboarding_shown')) {
+        const timer = setTimeout(() => setActive(true), 800);
+        return () => clearTimeout(timer);
+      }
+      const handler = () => setTimeout(() => setActive(true), 400);
+      window.addEventListener('walkthrough:start', handler, { once: true });
+      return () => window.removeEventListener('walkthrough:start', handler);
     }
-  }, [storageKey]);
+    const timer = setTimeout(() => setActive(true), 800);
+    return () => clearTimeout(timer);
+  }, [storageKey, defer]);
 
   const measure = useCallback(() => {
     const s = steps[step];

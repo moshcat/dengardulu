@@ -57,6 +57,7 @@ export function ResultReport({
         score={safety.suspicion_score}
         headline={lang === 'bm' ? safety.headline_bm : safety.headline_en}
         lang={lang}
+        isElderly={isElderly}
       />
 
       {/* Card 1 — Transcript + Voice Observations */}
@@ -535,7 +536,9 @@ function CopyBox({
 }) {
   const waHref = (() => {
     const encoded = encodeURIComponent(text);
-    const digits = whatsappPhone?.replace(/\D/g, '') ?? '';
+    let digits = whatsappPhone?.replace(/\D/g, '') ?? '';
+    if (digits.startsWith('0')) digits = '60' + digits.slice(1);
+    if (digits && !digits.startsWith('60')) digits = '60' + digits;
     return digits ? `https://wa.me/${digits}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
   })();
 
