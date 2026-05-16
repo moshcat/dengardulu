@@ -20,6 +20,35 @@ PRINCIPLES FOR GOOD CHALLENGE QUESTIONS
    - friend → shared specific memory
    - bank/gov → ask them to state a specific last transaction OR case number only they would have
 
+MALAYSIAN ROLE-SPECIFIC EXAMPLES
+
+boss / professional:
+- "Apa nama projek yang kita bincang dalam mesyuarat semalam?" (What project did we discuss in yesterday's meeting?)
+- "Siapa yang duduk sebelah kamu semasa lunch meeting kita minggu lepas?" (Who sat next to you during our lunch meeting last week?)
+- AVOID generic "What is my name?" — too easy to guess from social media
+
+bank / financial:
+- FIRST question MUST ask for a specific detail only the bank would know: "Boleh nyatakan 3 digit terakhir nombor akaun saya?" (Can you state the last 3 digits of my account number?)
+- "Apakah jumlah transaksi terakhir saya?" (What was my last transaction amount?)
+- If they claim to be from a specific bank, ask: "Di cawangan mana akaun saya didaftarkan?" (Which branch is my account registered at?)
+
+police / governmental / lhdn:
+- FIRST question MUST ask for official reference: "Boleh beri nombor rujukan kes saya?" (Can you give me my case reference number?)
+- "Apakah nama penuh saya seperti dalam rekod anda?" (What is my full name as in your records?)
+- Government officers ALWAYS have case numbers — failure to provide one is a strong red flag
+
+family:
+- "Apa nama kucing kita masa kecil?" (What was our childhood cat's name?)
+- "Kat mana kita makan sama-sama hari tu?" (Where did we eat together that day?)
+- Use SPECIFIC shared memories, not general facts findable on social media
+
+friend:
+- "Apa kita buat masa lepak hari tu?" (What did we do when we hung out that day?)
+- Reference recent shared experiences
+
+CRITICAL RULE FOR bank/police/governmental/financial roles:
+The FIRST of your 2 questions MUST ask for an official reference number, account detail, or case number. Real officials always have these. Scammers never do. This is the single most effective verification question for institutional impersonation.
+
 Output 2 questions (bilingual BM + EN) with reasoning, plus a copy-paste WhatsApp-ready message.
 
 Return ONLY valid JSON matching the schema.`;

@@ -37,21 +37,33 @@ export function VerdictBadge({
       : 'bg-[#0A7A3D]';
 
   return (
-    <div className={`rounded-[40px] border p-8 md:p-10 ${toneClass}`}>
-      <div className="flex items-start gap-5">
-        <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center shrink-0">
-          <Icon size={32} strokeWidth={1.8} />
+    <div className={`rounded-[28px] md:rounded-[40px] border p-5 sm:p-8 md:p-10 ${toneClass}`}>
+      {/* Mobile: stacked layout */}
+      <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-5">
+        <div className="flex items-center gap-4 sm:block">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/60 flex items-center justify-center shrink-0">
+            <Icon size={24} strokeWidth={1.8} className="sm:w-8 sm:h-8" />
+          </div>
+          {/* Score — inline on mobile, separate column on desktop */}
+          <div className="sm:hidden">
+            <div className="text-[40px] font-medium leading-none tracking-[-0.02em]">
+              {score}<span className="text-[14px] opacity-60 ml-0.5">/100</span>
+            </div>
+          </div>
         </div>
+
         <div className="flex-1 min-w-0">
-          <div className="eyebrow mb-2 opacity-80">
+          <div className="eyebrow mb-1 opacity-80">
             <span>{t.suspicion_score}</span>
           </div>
-          <div className="text-[32px] md:text-[40px] font-medium leading-[1.05] tracking-[-0.02em] mb-2">
+          <div className="text-[26px] sm:text-[32px] md:text-[40px] font-medium leading-[1.1] tracking-[-0.02em] mb-1.5">
             {label}
           </div>
-          <p className="text-[15px] opacity-85 leading-[1.5] max-w-xl">{headline}</p>
+          <p className="text-[14px] sm:text-[15px] opacity-85 leading-[1.45]">{headline}</p>
         </div>
-        <div className="text-right shrink-0">
+
+        {/* Score — right column on sm+ */}
+        <div className="hidden sm:block text-right shrink-0">
           <div className="text-[48px] md:text-[64px] font-medium leading-none tracking-[-0.02em]">
             {score}
           </div>
@@ -61,7 +73,7 @@ export function VerdictBadge({
         </div>
       </div>
 
-      <div className="mt-6 h-1.5 bg-black/10 rounded-full overflow-hidden">
+      <div className="mt-5 sm:mt-6 h-1.5 bg-black/10 rounded-full overflow-hidden">
         <div
           className={`h-full transition-all duration-700 ${barColor}`}
           style={{ width: `${Math.max(0, Math.min(100, score))}%` }}

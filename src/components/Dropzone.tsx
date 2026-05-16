@@ -3,6 +3,8 @@
 import { useRef, useState, useCallback } from 'react';
 import { Upload, FileAudio, X, AlertCircle } from 'lucide-react';
 import { messages, Lang } from '@/i18n/messages';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const MAX_BYTES = 20 * 1024 * 1024;
 const ACCEPT =
@@ -11,11 +13,13 @@ const ACCEPT =
 export type DropzoneProps = {
   onFile: (file: File | null) => void;
   lang: Lang;
+  file?: File | null;
 };
 
-export function Dropzone({ onFile, lang }: DropzoneProps) {
+export function Dropzone({ onFile, lang, file: externalFile }: DropzoneProps) {
   const t = messages[lang];
-  const [file, setFile] = useState<File | null>(null);
+  const [internalFile, setInternalFile] = useState<File | null>(null);
+  const file = externalFile ?? internalFile;
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,14 +37,14 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
         return;
       }
       setError(null);
-      setFile(f);
+      setInternalFile(f);
       onFile(f);
     },
     [onFile, t]
   );
 
   const clear = () => {
-    setFile(null);
+    setInternalFile(null);
     setError(null);
     onFile(null);
     if (inputRef.current) inputRef.current.value = '';
@@ -117,9 +121,9 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
               <div className="text-[20px] font-medium mb-1">{t.dropzone_drop}</div>
               <div className="text-[13px] text-[var(--color-slate)]">{t.dropzone_or}</div>
             </div>
-            <button type="button" className="outline-pill">
+            <Button variant="outline-pill" size="pill" type="button">
               {t.dropzone_browse}
-            </button>
+            </Button>
             <div className="text-[12px] text-[var(--color-slate)] mt-1">
               {t.dropzone_formats}
             </div>
@@ -127,10 +131,10 @@ export function Dropzone({ onFile, lang }: DropzoneProps) {
         )}
       </div>
       {error && (
-        <div className="mt-4 flex items-start gap-3 px-5 py-4 rounded-[20px] bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/20">
-          <AlertCircle size={18} className="text-[var(--color-mc-red)] shrink-0 mt-0.5" />
-          <p className="text-[14px] text-[var(--color-mc-red)]">{error}</p>
-        </div>
+        <Alert variant="destructive-pill" className="mt-4">
+          <AlertCircle size={18} />
+          <AlertDescription className="text-[14px]">{error}</AlertDescription>
+        </Alert>
       )}
     </div>
   );

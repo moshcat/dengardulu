@@ -42,18 +42,78 @@ OUTPUT (always bilingual BM + EN)
 
 HOTLINES to include (always):
 - Police: 999
-- CCID (Commercial Crime Investigation): 03-2610 1522
+- CCID (Commercial Crime Investigation): 03-2610 1559
 - BNMTELELINK: 1-300-88-5465
 - Talian Kasih: 15999
 
 Return ONLY valid JSON. No prose.`;
+
+/**
+ * Deterministic scoring based on the rubric — never trust the model to do math.
+ * Returns 0-100.
+ */
+function computeSuspicionScore(
+  transcribe: TranscribeOutput,
+  content: ContentAnalyzerOutput,
+  phone: PhoneLookupResult
+): number {
+  let score = 0;
+
+  // +30 if ANY sensitive_request of high-risk type
+  const highRiskTypes = new Set([
+    'otp_or_pin', 'money_transfer', 'account_password', 'bank_login', 'crypto_transfer',
+  ]);
+  if (content.sensitive_requests.some((r) => highRiskTypes.has(r.type))) {
+    score += 30;
+  }
+
+  // +15 if urgency_score >= 8
+  if (content.urgency_score >= 8) score += 15;
+
+  // +20 if impersonation with missing credibility cues
+  const authTypes = new Set(['professional', 'governmental', 'financial']);
+  if (
+    authTypes.has(content.impersonation_signals.authority_type) &&
+    content.impersonation_signals.credibility_cues_missing.length > 0
+  ) {
+    score += 20;
+  }
+
+  // +10 per secrecy_marker, max +20
+  score += Math.min(content.secrecy_markers.length * 10, 20);
+
+  // +15 if phone found in scam DB, +25 if report_count >= 3
+  if (phone.found) {
+    score += phone.report_count >= 3 ? 25 : 15;
+  }
+
+  // +10 if voice emotion incongruent
+  if (transcribe.voice_observations.emotion_authenticity === 'incongruent') {
+    score += 10;
+  }
+
+  // +5 if >= 2 synthetic cues
+  if (transcribe.voice_observations.synthetic_cues.length >= 2) {
+    score += 5;
+  }
+
+  // +5 if >= 3 RAG pattern hits
+  if (content.rag_patterns_hit_count >= 3) score += 5;
+
+  return Math.min(score, 100);
+}
+
+function scoreToVerdict(score: number): 'LOW' | 'MEDIUM' | 'HIGH' {
+  if (score >= 75) return 'HIGH';
+  if (score >= 25) return 'MEDIUM';
+  return 'LOW';
+}
 
 function detectConflict(
   transcribe: TranscribeOutput,
   content: ContentAnalyzerOutput,
   phone: PhoneLookupResult
 ): boolean {
-  // Conflict: voice cues suggest synthetic but content looks benign, or vice versa
   const voiceSuspicious =
     transcribe.voice_observations.synthetic_cues.length >= 2 ||
     transcribe.voice_observations.emotion_authenticity === 'incongruent';
@@ -112,6 +172,12 @@ Apply the scoring rubric, produce the final verdict JSON.
     );
 
     if (!output) throw new Error('SafetyPlan returned empty output');
+
+    // Override model's score with deterministic computation — LLMs can't do math
+    const computedScore = computeSuspicionScore(transcribe, content, phone);
+    output.suspicion_score = computedScore;
+    output.verdict = scoreToVerdict(computedScore);
+
     return output;
   }
 );

@@ -1,13 +1,20 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle, Sparkles } from 'lucide-react';
-import { LogoWordmark } from '@/components/Logo';
+import { NavBar } from '@/components/NavBar';
 import { Dropzone } from '@/components/Dropzone';
 import { AgentStepper, StepperStage } from '@/components/AgentStepper';
 import { ResultReport } from '@/components/ResultReport';
+import { saveAnalysis } from '@/lib/history';
 import { messages, Lang } from '@/i18n/messages';
+import { Walkthrough } from '@/components/Walkthrough';
+import { analyzeSteps } from '@/lib/walkthrough-steps';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import type { FullAnalysis } from '@/ai/schemas';
 
 type Phase = 'idle' | 'analyzing' | 'done' | 'error';
@@ -57,6 +64,26 @@ export default function AnalyzePage() {
   const [stages, setStages] = useState<StepperStage[]>(INITIAL_STAGES());
   const [result, setResult] = useState<FullAnalysis | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const sharedId = params.get('shared');
+    if (!sharedId) return;
+
+    fetch(`/share-target?id=${sharedId}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          console.error('share-target GET failed:', res.status, await res.text());
+          return;
+        }
+        const blob = await res.blob();
+        const ext = blob.type.includes('ogg') ? 'opus' : blob.type.split('/')[1] || 'audio';
+        setFile(new File([blob], `shared-audio.${ext}`, { type: blob.type || 'audio/ogg' }));
+        window.history.replaceState({}, '', '/analyze');
+      })
+      .catch((err) => console.error('share-target fetch error:', err));
+  }, []);
 
   const updateStage = useCallback((id: string, patch: Partial<StepperStage>) => {
     setStages((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
@@ -145,7 +172,9 @@ export default function AnalyzePage() {
         break;
       case 'done':
         updateStage('safety', { status: 'done', data: event.data });
-        setResult(event.data as FullAnalysis);
+        const analysis = event.data as FullAnalysis;
+        setResult(analysis);
+        saveAnalysis(analysis, { phone, role });
         setPhase('done');
         break;
       case 'error':
@@ -171,37 +200,10 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
-      {/* Floating nav */}
-      <nav className="floating-nav">
-        <Link href="/" className="hover:opacity-80 transition-opacity">
-          <LogoWordmark size={28} />
-        </Link>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setLang('en')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-              lang === 'en'
-                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            EN
-          </button>
-          <button
-            onClick={() => setLang('bm')}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-              lang === 'bm'
-                ? 'bg-[var(--color-ink)] text-[var(--color-canvas)]'
-                : 'text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            BM
-          </button>
-        </div>
-      </nav>
+    <div className="min-h-screen flex flex-col">
+      <NavBar lang={lang} onLangChange={setLang} />
 
-      <div className="flex-1 pt-32 pb-16 px-6">
+      <main id="main-content" className="flex-1 pb-16 px-6" style={{ paddingTop: 'calc(var(--nav-height) + 1rem)' }}>
         <div className="max-w-[880px] w-full mx-auto space-y-8">
           <Link
             href="/"
@@ -225,54 +227,71 @@ export default function AnalyzePage() {
                 </p>
               </div>
 
-              <Dropzone onFile={setFile} lang={lang} />
+              <div data-tour="dropzone">
+                <Dropzone onFile={setFile} file={file} lang={lang} />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div data-tour="phone-input">
                   <label
                     htmlFor="phone"
                     className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3"
                   >
                     {t.phone_label}
                   </label>
-                  <input
+                  <Input
                     id="phone"
                     type="tel"
+                    variant="pill"
                     placeholder={t.phone_placeholder}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-full border border-[var(--color-ink)]/20 bg-white px-5 py-3 text-[15px] focus:border-[var(--color-ink)] focus:outline-none transition-colors"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3">
+                <div data-tour="role-selector">
+                  <label
+                    className="block text-[13px] font-bold tracking-[0.02em] uppercase text-[var(--color-slate)] mb-3"
+                    id="role-label"
+                  >
                     {t.role_label}
                   </label>
-                  <div className="flex flex-wrap gap-2">
+                  <div
+                    className="flex flex-wrap gap-2"
+                    role="radiogroup"
+                    aria-labelledby="role-label"
+                  >
                     {ROLES.map((r) => (
-                      <button
+                      <Badge
                         key={r}
+                        variant="chip"
+                        role="radio"
+                        aria-checked={role === r}
+                        render={<button type="button" />}
                         onClick={() => setRole(r)}
-                        className={`ghost-chip cursor-pointer transition-all ${
-                          role === r ? 'chip-selected' : ''
+                        className={`cursor-pointer transition-all ${
+                          role === r
+                            ? 'bg-[var(--color-ink)] text-[var(--color-canvas)] border-[var(--color-ink)]'
+                            : ''
                         }`}
                       >
                         {t[`role_${r}` as keyof typeof t]}
-                      </button>
+                      </Badge>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <button
+              <Button
+                variant="ink-pill"
+                size="pill-lg"
                 disabled={!file}
                 onClick={startAnalysis}
-                className="ink-pill w-full justify-center py-4 text-[16px]"
+                data-tour="start-btn"
               >
                 <Sparkles size={18} />
                 {t.start_analysis}
-              </button>
+              </Button>
             </div>
           )}
 
@@ -297,21 +316,21 @@ export default function AnalyzePage() {
           {/* ───────── ERROR ───────── */}
           {phase === 'error' && (
             <div className="space-y-5">
-              <div className="flex items-start gap-4 px-6 py-5 rounded-[24px] bg-[var(--color-mc-red)]/5 border border-[var(--color-mc-red)]/30">
-                <AlertCircle size={20} className="text-[var(--color-mc-red)] shrink-0 mt-0.5" />
+              <Alert variant="destructive-pill-lg">
+                <AlertCircle size={20} />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-[var(--color-mc-red)] mb-1">
+                  <AlertTitle className="font-medium mb-1">
                     {t.error_generic}
-                  </div>
-                  <div className="text-[13px] text-[var(--color-slate)] font-mono break-all">
+                  </AlertTitle>
+                  <AlertDescription className="text-[13px] text-[var(--color-slate)] font-mono break-all">
                     {errorMsg || 'unknown'}
-                  </div>
+                  </AlertDescription>
                 </div>
-              </div>
+              </Alert>
               <AgentStepper stages={stages} lang={lang} />
-              <button onClick={restart} className="outline-pill">
+              <Button variant="outline-pill" size="pill" onClick={restart}>
                 {t.analyze_another}
-              </button>
+              </Button>
             </div>
           )}
 
@@ -320,11 +339,15 @@ export default function AnalyzePage() {
             <ResultReport analysis={result} lang={lang} onRestart={restart} />
           )}
         </div>
-      </div>
+      </main>
 
       <footer className="bg-[var(--color-ink)] text-white/60 text-[12px] text-center py-6 px-6">
         <p className="max-w-2xl mx-auto leading-[1.5]">{t.footer_disclaimer}</p>
       </footer>
-    </main>
+
+      {phase === 'idle' && (
+        <Walkthrough steps={analyzeSteps} lang={lang} storageKey="dengardulu_tour_analyze" />
+      )}
+    </div>
   );
 }

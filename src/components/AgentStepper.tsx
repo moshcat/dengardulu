@@ -87,20 +87,20 @@ function StageRow({
         <div className="flex-1 min-w-0">
           <div className={labelClass}>{label}</div>
         </div>
-        {hasData && stage.status !== 'pending' && (
-          <button
-            onClick={() => setOpen((o) => !o)}
-            className={`inline-flex items-center gap-1 text-[12px] font-medium px-3 py-1.5 rounded-full transition-colors ${
-              stage.status === 'active'
-                ? 'bg-white/10 text-white hover:bg-white/20'
-                : 'bg-[var(--color-canvas)] text-[var(--color-slate)] hover:text-[var(--color-ink)]'
-            }`}
-          >
-            {open ? t.hide_agent_output : t.show_agent_output}
-            {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-          </button>
-        )}
       </div>
+      {hasData && stage.status !== 'pending' && (
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className={`mt-2 ml-[52px] inline-flex items-center gap-1 text-[12px] font-medium px-3 py-1.5 rounded-full transition-colors ${
+            stage.status === 'active'
+              ? 'bg-white/10 text-white hover:bg-white/20'
+              : 'bg-[var(--color-canvas)] text-[var(--color-slate)] hover:text-[var(--color-ink)]'
+          }`}
+        >
+          {open ? t.hide_agent_output : t.show_agent_output}
+          {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+        </button>
+      )}
       {open && hasData && (
         <pre
           className={`mt-4 text-[11px] leading-[1.5] p-4 rounded-[16px] overflow-auto max-h-64 font-mono ${
